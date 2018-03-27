@@ -3,11 +3,12 @@ import { Route, Link } from 'react-router-dom';
 import Home from '../home';
 import About from '../about';
 
+import ButtonAppBar from '../Navbar';
+
 const App = () => (
   <div>
     <header>
-      <Link to="/">Home</Link>
-      <Link to="/about-us">About</Link>
+      <ButtonAppBar />
     </header>
 
     <main>
