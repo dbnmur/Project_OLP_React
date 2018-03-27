@@ -16,6 +16,8 @@ class CustomSelect extends React.Component {
 
   render() {
     const { menuItems } = this.props;
+    let itemValue = 10;
+
     return (
       <form autoComplete="off">
         <FormControl fullWidth>
@@ -30,7 +32,10 @@ class CustomSelect extends React.Component {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            {menuItems.map(el => <MenuItem value={10}>{el}</MenuItem>)}
+            {menuItems.map(el => {
+              itemValue += 10;
+              return <MenuItem value={itemValue}>{el}</MenuItem>;
+            })}
           </Select>
         </FormControl>
       </form>
