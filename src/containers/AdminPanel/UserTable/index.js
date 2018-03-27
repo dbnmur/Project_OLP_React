@@ -7,11 +7,19 @@ import Table, {
 } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 
+import './UserTable.css';
+
 class UserTable extends React.Component {
   render() {
     const { users } = this.props;
     return (
-      <Paper>
+      <Paper
+        style={{
+          width: '80%',
+          margin: '0 auto',
+          marginTop: '45px',
+          display: 'block'
+        }}>
         <Table>
           <TableHead>
             <TableRow>
