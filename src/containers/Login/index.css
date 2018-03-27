@@ -1,0 +1,13 @@
+.fullWidth {
+  width: 100% !important;
+}
+
+.loginForm {
+  width: 60%;
+  display: block;
+  margin: 0 auto;
+}
+
+button {
+  margin-top: 10px;
+}
