@@ -9,8 +9,6 @@ import {
   decrementAsync
 } from '../../modules/counter';
 
-import ButtonAppBar from '../Navbar';
-
 const Home = props => (
   <div>
     <h1>Home</h1>
