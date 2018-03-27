@@ -4,7 +4,7 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 
-class RoleSelect extends React.Component {
+class CustomSelect extends React.Component {
   state = {
     role: '',
     name: 'hai'
@@ -15,10 +15,11 @@ class RoleSelect extends React.Component {
   };
 
   render() {
+    const { menuItems } = this.props;
     return (
       <form autoComplete="off">
         <FormControl fullWidth>
-          <InputLabel htmlFor="role">Role</InputLabel>
+          <InputLabel htmlFor="role">{this.props.title}</InputLabel>
           <Select
             value={this.state.role}
             onChange={this.handleChange}
@@ -29,8 +30,7 @@ class RoleSelect extends React.Component {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem value={10}>Student</MenuItem>
-            <MenuItem value={20}>Instructor</MenuItem>
+            {menuItems.map(el => <MenuItem value={10}>{el}</MenuItem>)}
           </Select>
         </FormControl>
       </form>
@@ -38,4 +38,4 @@ class RoleSelect extends React.Component {
   }
 }
 
-export default RoleSelect;
+export default CustomSelect;

@@ -43,6 +43,13 @@ const Login = () => (
           fullWidth
           margin="normal"
         />
+        <TextField
+          id="password-input"
+          label="Repeat password"
+          type="password"
+          fullWidth
+          margin="normal"
+        />
         <Button style={{ margin: '.67em 0' }} variant="raised" color="primary">
           Register
         </Button>
