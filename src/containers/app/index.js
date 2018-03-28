@@ -6,6 +6,7 @@ import Login from '../Login';
 
 import ButtonAppBar from '../Navbar';
 import AdminPanel from '../AdminPanel';
+import Dashboard from '../Dashboard';
 
 const App = () => (
   <div>
@@ -18,6 +19,7 @@ const App = () => (
       <Route exact path="/about-us" component={About} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/admin" component={AdminPanel} />
+      <Route exact path="/dashboard" component={Dashboard} />
     </main>
   </div>
 );

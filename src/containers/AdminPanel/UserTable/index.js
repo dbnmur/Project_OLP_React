@@ -37,6 +37,7 @@ class UserTable extends React.Component {
                   <TableCell numeric>{user.SecondName}</TableCell>
                   <TableCell numeric>{user.Email}</TableCell>
                   <TableCell numeric>{user.Role}</TableCell>
+                  {/* TODO: Be able to select and asign a role */}
                 </TableRow>
               );
             })}

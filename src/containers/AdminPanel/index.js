@@ -61,6 +61,7 @@ class AdminPanel extends React.Component {
         <FilterSection />
         <UserTable users={this.state.users} />;
       </div>
+      // TODO: implement pagination
     );
   }
 }
