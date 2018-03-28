@@ -3,8 +3,8 @@ import Grid from 'material-ui/Grid';
 import Checkbox from 'material-ui/Checkbox';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 
-import MyCard from './MyCard';
-import FloatButton from './FloatButton';
+import Course from './Course';
+import CourseDialog from './CourseDialog';
 
 const courses = [
   {
@@ -107,7 +107,7 @@ class Dashboard extends React.Component {
             {courses.map(el => {
               return (
                 <Grid item>
-                  <MyCard
+                  <Course
                     title={el.title}
                     instructor={el.instructor}
                     description={el.description}
@@ -124,7 +124,7 @@ class Dashboard extends React.Component {
               alignItems="center"
               style={{ marginTop: '25px' }}>
               <Grid item>
-                <FloatButton />
+                <CourseDialog />
               </Grid>
             </Grid>
           )}

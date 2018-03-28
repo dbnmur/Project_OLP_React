@@ -14,7 +14,7 @@ const styles = {
   }
 };
 
-class MyCard extends React.Component {
+class Course extends React.Component {
   render() {
     const { classes, title, instructor, description } = this.props;
     return (
@@ -40,8 +40,8 @@ class MyCard extends React.Component {
   }
 }
 
-MyCard.propTypes = {
+Course.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(MyCard);
+export default withStyles(styles)(Course);

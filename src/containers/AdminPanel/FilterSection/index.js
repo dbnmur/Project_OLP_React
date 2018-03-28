@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from 'material-ui/Grid';
 import TextField from 'material-ui/TextField';
-import CustomSelect from '../FilterSection/CustomSelect';
+import CustomSelect from '../../CustomSelect';
 
 class FilterSection extends React.Component {
   render() {
