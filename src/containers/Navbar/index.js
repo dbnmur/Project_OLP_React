@@ -22,30 +22,36 @@ const styles = {
   }
 };
 
-function ButtonAppBar(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <TemporaryDrawer />
+class ButtonAppBar extends React.Component {
+  render() {
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <TemporaryDrawer />
 
-          <Typography variant="title" className={classes.flex}>
-            <Link style={{ color: 'white', textDecoration: 'none' }} to="/">
-              Home
-            </Link>
-          </Typography>
-          <Button>
-            <Link
-              style={{ color: 'white', textDecoration: 'none' }}
-              to="/login">
-              Log in
-            </Link>
-          </Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+            <Typography variant="title" className={classes.flex}>
+              <Link style={{ color: 'white', textDecoration: 'none' }} to="/">
+                Home
+              </Link>
+            </Typography>
+            {this.props.isLoggedIn ? (
+              this.props.logout
+            ) : (
+              <Button>
+                <Link
+                  style={{ color: 'white', textDecoration: 'none' }}
+                  to="/login">
+                  Log in
+                </Link>
+              </Button>
+            )}
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
 }
 
 ButtonAppBar.propTypes = {
