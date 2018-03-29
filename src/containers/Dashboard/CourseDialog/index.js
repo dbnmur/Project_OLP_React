@@ -5,7 +5,7 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog';
 
-import FloatButton from '../FloatButton';
+import FloatButton from './FloatButton';
 import AddCourseStepper from './AddCourseStepper';
 
 export default class CourseDialog extends React.Component {
