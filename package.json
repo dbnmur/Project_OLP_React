@@ -8,7 +8,12 @@
     "prettier": "^1.11.0",
     "react-scripts": "^1.0.17"
   },
-  "proxy": "https://localhost:53223",
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:53232",
+      "secure": false
+    }
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "material-ui": "^1.0.0-beta.38",
