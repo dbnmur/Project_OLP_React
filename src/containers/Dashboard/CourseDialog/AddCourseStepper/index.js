@@ -30,32 +30,34 @@ function getSteps() {
   ];
 }
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <AddNewCourseForm />;
-    case 1:
-      return (
-        <CustomSelect
-          title="Select group"
-          menuItems={['PI15B', 'PI16B', 'PI17B']}
-        />
-      );
-    case 2:
-      return 'Confirm course creation';
-    default:
-      return 'Unknown step';
-  }
-}
-
 class AddCourseStepper extends React.Component {
   static propTypes = {
     classes: PropTypes.object
   };
 
-  state = {
-    activeStep: 0
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeStep: 0
+    };
+
+    this.getStepContent = this.getStepContent.bind(this);
+  }
+
+  getStepContent(step) {
+    switch (step) {
+      case 0:
+        return <AddNewCourseForm />;
+      case 1:
+        return (
+          <CustomSelect title="Select group" menuItems={this.props.groups} />
+        );
+      case 2:
+        return 'Confirm course creation';
+      default:
+        return 'Unknown step';
+    }
+  }
 
   isStepOptional = step => {
     return step === 1;
@@ -102,7 +104,7 @@ class AddCourseStepper extends React.Component {
         <div>
           <div>
             <Typography className={classes.instructions}>
-              {getStepContent(activeStep)}
+              {this.getStepContent(activeStep)}
             </Typography>
             <div>
               <Button
