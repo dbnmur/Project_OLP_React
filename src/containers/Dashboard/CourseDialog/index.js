@@ -4,14 +4,30 @@ import Dialog, {
   DialogContentText,
   DialogTitle
 } from 'material-ui/Dialog';
+import axios from 'axios';
 
 import FloatButton from './FloatButton';
 import AddCourseStepper from './AddCourseStepper';
 
 export default class CourseDialog extends React.Component {
   state = {
-    open: false
+    open: false,
+    groups: [],
+    isError: false,
+    errorMessage: ''
   };
+
+  componentDidMount() {
+    axios
+      .get('/api/groups')
+      .then(response => {
+        const groups = response.data;
+        this.setState({ groups });
+      })
+      .catch(error => {
+        this.setState({ isError: true, errorMessage: error });
+      });
+  }
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -34,7 +50,10 @@ export default class CourseDialog extends React.Component {
             <DialogContentText>
               To add a new course fill the form below
             </DialogContentText>
-            <AddCourseStepper myClick={this.handleClose} />
+            <AddCourseStepper
+              groups={this.state.groups}
+              myClick={this.handleClose}
+            />
           </DialogContent>
         </Dialog>
       </div>

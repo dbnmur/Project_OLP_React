@@ -104,9 +104,9 @@ class Dashboard extends React.Component {
             alignItems="center"
             spacing={24}
             style={{ width: '100%' }}>
-            {courses.map(el => {
+            {courses.map((el, index) => {
               return (
-                <Grid item>
+                <Grid item key={index}>
                   <Course
                     title={el.title}
                     instructor={el.instructor}

@@ -5,6 +5,7 @@ import CustomSelect from '../../CustomSelect';
 
 class FilterSection extends React.Component {
   render() {
+    const selectItems = ['PI15B', 'PI16B', 'PI17B'];
     return (
       <Grid
         justify="center"
@@ -25,7 +26,7 @@ class FilterSection extends React.Component {
           </form>
         </Grid>
         <Grid item md={2}>
-          <CustomSelect title="Group" menuItems={['PI15B', 'PI16B', 'PI17B']} />
+          <CustomSelect title="Group" menuItems={selectItems} />
         </Grid>
       </Grid>
     );
