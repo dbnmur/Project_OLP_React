@@ -10,22 +10,40 @@ import FloatButton from './FloatButton';
 import AddCourseStepper from './AddCourseStepper';
 
 export default class CourseDialog extends React.Component {
-  state = {
-    open: false,
-    groups: [],
-    isError: false,
-    errorMessage: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      groups: [],
+      isError: false,
+      errorMessage: ''
+    };
+
+    this.extraxtGroupNamesFromObject = this.extraxtGroupNamesFromObject.bind(
+      this
+    );
+  }
+
+  extraxtGroupNamesFromObject = arr => {
+    let temp = [];
+
+    arr.forEach(el => {
+      temp.push(el.name);
+    });
+
+    return temp;
   };
 
   componentDidMount() {
     axios
       .get('/api/groups')
       .then(response => {
-        const groups = response.data;
-        this.setState({ groups });
+        this.setState({
+          groups: this.extraxtGroupNamesFromObject(response.data)
+        });
       })
       .catch(error => {
-        this.setState({ isError: true, errorMessage: error });
+        return error;
       });
   }
 

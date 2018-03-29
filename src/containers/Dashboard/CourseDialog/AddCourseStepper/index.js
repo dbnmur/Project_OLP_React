@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
 import TextField from 'material-ui/TextField';
 
 import CustomSelect from '../../../CustomSelect';
@@ -102,9 +101,7 @@ class AddCourseStepper extends React.Component {
         </Stepper>
         <div>
           <div>
-            <Typography className={classes.instructions}>
-              {this.getStepContent(activeStep)}
-            </Typography>
+            {this.getStepContent(activeStep)}
             <div>
               <Button
                 disabled={activeStep === 0}
@@ -133,7 +130,7 @@ class AddCourseStepper extends React.Component {
 
 const AddNewCourseForm = () => {
   return (
-    <form class="loginForm" autoComplete="off">
+    <form className="loginForm" autoComplete="off">
       <TextField id="title" fullWidth label="Course title" margin="normal" />
       <TextField
         id="description"

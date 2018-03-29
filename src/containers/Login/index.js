@@ -10,10 +10,10 @@ const Login = () => (
   <Grid container spacing={24} className="fullWidth">
     <Grid style={{ textAlign: 'center', width: '100%' }} item md={6}>
       <h1>Login</h1>
-      <form class="loginForm" autoComplete="off">
-        <TextField id="name" fullWidth label="Email" margin="normal" />
+      <form className="loginForm" autoComplete="off">
+        <TextField id="email" fullWidth label="Email" margin="normal" />
         <TextField
-          id="password-input"
+          id="login-password-input"
           label="Password"
           type="password"
           fullWidth
@@ -26,25 +26,30 @@ const Login = () => (
     </Grid>
     <Grid style={{ textAlign: 'center', width: '100%' }} item md={6}>
       <h1>Register</h1>
-      <form class="loginForm" autoComplete="off">
-        <TextField id="name" fullWidth label="First Name" margin="normal" />
+      <form className="loginForm" autoComplete="off">
+        <TextField
+          id="firstname"
+          fullWidth
+          label="First Name"
+          margin="normal"
+        />
         <TextField
           id="secondName"
           fullWidth
           label="Second Name"
           margin="normal"
         />
-        <TextField id="email" fullWidth label="Email" margin="normal" />
+        <TextField id="registerEmail" fullWidth label="Email" margin="normal" />
         <RoleSelect />
         <TextField
-          id="password-input"
+          id="register-password-input"
           label="Password"
           type="password"
           fullWidth
           margin="normal"
         />
         <TextField
-          id="password-input"
+          id="register-password-input-repeat"
           label="Repeat password"
           type="password"
           fullWidth

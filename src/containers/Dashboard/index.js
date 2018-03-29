@@ -73,7 +73,7 @@ class Dashboard extends React.Component {
   render() {
     const { courses } = this.state;
     return (
-      <Grid container spacing={8} style={{ width: '100%', marginTop: '25px' }}>
+      <Grid item md={12} sx={12} sm={12}>
         <FormGroup row style={{ marginLeft: '45px' }}>
           <FormControlLabel
             control={
@@ -86,49 +86,46 @@ class Dashboard extends React.Component {
             label="Instructor"
           />
         </FormGroup>
-        <Grid item md={12}>
-          {/* Grid for title */}
-          <Grid
-            container
-            justify="center"
-            alignItems="center"
-            style={{ width: '100%' }}>
-            <Grid item>
-              <h1 style={{ marginBottom: '45px' }}>My courses</h1>
-            </Grid>
+        {/* Grid for title */}
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          style={{ width: '100%' }}>
+          <Grid item>
+            <h1 style={{ marginBottom: '45px' }}>My courses</h1>
           </Grid>
-          {/* Grid for courses */}
-          <Grid
-            container
-            justify="center"
-            alignItems="center"
-            spacing={24}
-            style={{ width: '100%' }}>
-            {courses.map((el, index) => {
-              return (
-                <Grid item key={index}>
-                  <Course
-                    title={el.title}
-                    instructor={el.instructor}
-                    description={el.description}
-                  />
-                </Grid>
-              );
-            })}
-            {/* Grid for add button */}
-          </Grid>
-          {this.state.isInstructor && (
-            <Grid
-              container
-              justify="flex-end"
-              alignItems="center"
-              style={{ marginTop: '25px' }}>
-              <Grid item>
-                <CourseDialog />
-              </Grid>
-            </Grid>
-          )}
         </Grid>
+        {/* Grid for courses */}
+        <Grid
+          container
+          justify="center"
+          alignItems="center"
+          style={{ width: '100%' }}>
+          {courses.map((el, index) => {
+            return (
+              <Grid item key={index}>
+                <Course
+                  title={el.title}
+                  instructor={el.instructor}
+                  description={el.description}
+                />
+              </Grid>
+            );
+          })}
+          {/* Grid for add button */}
+        </Grid>
+        {this.state.isInstructor && (
+          <Grid
+            container
+            justify="flex-end"
+            alignItems="center"
+            style={{ marginTop: '25px', width: '100%' }}>
+            <Grid item>
+              <CourseDialog />
+            </Grid>
+          </Grid>
+        )}
       </Grid>
     );
   }
