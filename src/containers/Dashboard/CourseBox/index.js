@@ -4,6 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
+import { Link } from 'react-router-dom';
 
 const styles = {
   card: {
@@ -30,9 +31,13 @@ class CourseBox extends React.Component {
             <Typography component="p">{`Made by ${instructor}`}</Typography>
           </CardContent>
           <CardActions>
-            <Button size="small" color="primary">
-              Read more
-            </Button>
+            <Link
+              style={{ textDecoration: 'none', color: 'black' }}
+              to="/course">
+              <Button size="small" color="primary">
+                Read more
+              </Button>
+            </Link>
           </CardActions>
         </Card>
       </div>

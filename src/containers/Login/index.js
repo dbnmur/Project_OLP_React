@@ -33,16 +33,16 @@ class Login extends React.Component {
               fullWidth
               margin="normal"
             />
-            <Button
-              style={{ margin: '.67em 0', width: '100%', marginTop: '25px' }}
-              variant="raised"
-              color="primary">
-              <Link
-                style={{ color: 'white', textDecoration: 'none' }}
-                to="/login">
+            <Link
+              style={{ color: 'white', textDecoration: 'none' }}
+              to="/dashboard">
+              <Button
+                style={{ margin: '.67em 0', width: '100%', marginTop: '25px' }}
+                variant="raised"
+                color="primary">
                 Log in
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </form>
         </Grid>
       </Grid>

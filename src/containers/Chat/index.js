@@ -1,44 +1,92 @@
 import React from 'react';
-import { ChatFeed, Message } from 'react-chat-ui';
+import { ChatFeed } from 'react-chat-ui';
+import List from 'material-ui/List';
+import Input from 'material-ui/Input';
 
 class Chat extends React.Component {
   constructor() {
     super();
     this.state = {
+      element: '',
       messages: [
-        new Message({
+        {
           id: 1,
-          message: "I'm the recipient! (The person you're talking to)"
-        }), // Gray bubble
-        new Message({ id: 0, message: "I'm you -- the blue bubble!" }) // Blue bubble
+          message: 'Hey, what are you up to?'
+        }
       ]
-      //...
     };
+
+    this.keyPress = this.keyPress.bind(this);
+  }
+
+  keyPress(e) {
+    if (e.keyCode === 13) {
+      console.log('value', e.target.value);
+
+      let newMessage = {
+        id: 0,
+        message: e.target.value
+      };
+      this.setState(prevState => ({
+        messages: this.state.messages.concat([newMessage])
+      }));
+      e.target.value = '';
+    }
+  }
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   render() {
     return (
-      // Your JSX...
-
-      <ChatFeed
-        messages={this.state.messages} // Boolean: list of message objects
-        isTyping={this.state.is_typing} // Boolean: is the recipient typing
-        hasInputField={false} // Boolean: use our input, or use your own
-        showSenderName // show the name of the user who sent the message
-        bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
-        // JSON: Custom bubble styles
-        bubbleStyles={{
-          text: {
-            fontSize: 30
-          },
-          chatbubble: {
-            borderRadius: 70,
-            padding: 40
-          }
-        }}
-      />
-
-      // Your JSX...
+      <div>
+        <List
+          style={{
+            maxHeight: '360px',
+            overflow: 'auto',
+            width: '100%',
+            height: '500px'
+          }}>
+          <ChatFeed
+            messages={this.state.messages}
+            isTyping={this.state.is_typing}
+            showSenderName
+            bubblesCentered={false}
+            bubbleStyles={{
+              text: {
+                fontSize: 30
+              },
+              chatbubble: {
+                borderRadius: 70,
+                padding: 40
+              }
+            }}
+          />
+          <div
+            style={{ float: 'left', clear: 'both' }}
+            ref={el => {
+              this.messagesEnd = el;
+            }}
+          />
+        </List>
+        <Input
+          placeholder="Your message"
+          style={{ height: '40px', lineHeight: '40px', width: '100%' }}
+          onKeyDown={this.keyPress}
+          inputProps={{
+            'aria-label': 'Description'
+          }}
+        />
+      </div>
     );
   }
 }
