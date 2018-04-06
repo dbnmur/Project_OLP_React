@@ -19,12 +19,12 @@ export default class CourseDialog extends React.Component {
       errorMessage: ''
     };
 
-    this.extraxtGroupNamesFromObject = this.extraxtGroupNamesFromObject.bind(
+    this.extractGroupNamesFromObject = this.extractGroupNamesFromObject.bind(
       this
     );
   }
 
-  extraxtGroupNamesFromObject = arr => {
+  extractGroupNamesFromObject = arr => {
     let temp = [];
 
     arr.forEach(el => {
@@ -39,7 +39,7 @@ export default class CourseDialog extends React.Component {
       .get('/api/groups')
       .then(response => {
         this.setState({
-          groups: this.extraxtGroupNamesFromObject(response.data)
+          groups: this.extractGroupNamesFromObject(response.data)
         });
       })
       .catch(error => {
@@ -61,6 +61,7 @@ export default class CourseDialog extends React.Component {
         <FloatButton onClick={this.handleClickOpen} />
         <Dialog
           open={this.state.open}
+          style={{ minWidth: '500px', minHeight: '450px' }}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Add a new course</DialogTitle>

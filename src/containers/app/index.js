@@ -10,6 +10,7 @@ import Login from '../Login';
 import ButtonAppBar from '../Navbar';
 import AdminPanel from '../AdminPanel';
 import Dashboard from '../Dashboard';
+import Course from '../Course';
 
 class App extends React.Component {
   constructor() {
@@ -60,7 +61,7 @@ class App extends React.Component {
   render() {
     let logoutButton = this.createLogoutButton();
     return (
-      <div>
+      <div style={{ height: '100%' }}>
         <header>
           <ButtonAppBar
             isLoggedIn={this.authService.isAuthenticated()}
@@ -73,6 +74,7 @@ class App extends React.Component {
           <Route exact path="/about-us" component={About} />
           <Route exact path="/admin" component={AdminPanel} />
           <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/course" component={Course} />
           <Switch>
             <Route exact path="/login" render={() => this.renderHome()} />
             <Route

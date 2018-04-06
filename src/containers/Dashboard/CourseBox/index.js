@@ -14,7 +14,7 @@ const styles = {
   }
 };
 
-class Course extends React.Component {
+class CourseBox extends React.Component {
   render() {
     const { classes, title, instructor, description } = this.props;
     return (
@@ -40,8 +40,8 @@ class Course extends React.Component {
   }
 }
 
-Course.propTypes = {
+CourseBox.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Course);
+export default withStyles(styles)(CourseBox);

@@ -9,7 +9,8 @@ import CustomSelect from '../../../CustomSelect';
 
 const styles = theme => ({
   root: {
-    width: '90%'
+    minWidth: '90%',
+    height: '300px'
   },
   button: {
     marginRight: theme.spacing.unit
@@ -36,7 +37,12 @@ class AddCourseStepper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 0
+      activeStep: 0,
+      courseCreation: {
+        title: '',
+        description: '',
+        group: ''
+      }
     };
 
     this.getStepContent = this.getStepContent.bind(this);
@@ -48,7 +54,11 @@ class AddCourseStepper extends React.Component {
         return <AddNewCourseForm />;
       case 1:
         return (
-          <CustomSelect title="Select group" menuItems={this.props.groups} />
+          <CustomSelect
+            value={this.state.courseCreation.group}
+            title="Select group"
+            menuItems={this.props.groups}
+          />
         );
       case 2:
         return 'Confirm course creation';
@@ -134,7 +144,7 @@ const AddNewCourseForm = () => {
       <TextField id="title" fullWidth label="Course title" margin="normal" />
       <TextField
         id="description"
-        label="description"
+        label="Description"
         type="text"
         fullWidth
         margin="normal"

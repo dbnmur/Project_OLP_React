@@ -4,7 +4,6 @@ import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
 import TemporaryDrawer from './Drawer';
 
 import { Link } from 'react-router-dom';
@@ -36,17 +35,6 @@ class ButtonAppBar extends React.Component {
                 Home
               </Link>
             </Typography>
-            {this.props.isLoggedIn ? (
-              this.props.logout
-            ) : (
-              <Button>
-                <Link
-                  style={{ color: 'white', textDecoration: 'none' }}
-                  to="/login">
-                  Log in
-                </Link>
-              </Button>
-            )}
           </Toolbar>
         </AppBar>
       </div>

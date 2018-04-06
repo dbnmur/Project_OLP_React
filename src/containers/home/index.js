@@ -1,60 +1,77 @@
 import React from 'react';
-import { push } from 'react-router-redux';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import {
-  increment,
-  incrementAsync,
-  decrement,
-  decrementAsync
-} from '../../modules/counter';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
+import Typography from 'material-ui/Typography';
+import Grid from 'material-ui/Grid';
 
-const Home = props => (
-  <div>
-    <h1>Home</h1>
-    <p>Count: {props.count}</p>
-    <p>
-      <button onClick={props.increment} disabled={props.isIncrementing}>
-        Increment
-      </button>
-      <button onClick={props.incrementAsync} disabled={props.isIncrementing}>
-        Increment Async
-      </button>
-    </p>
+import Login from '../Login';
 
-    <p>
-      <button onClick={props.decrement} disabled={props.isDecrementing}>
-        Decrement
-      </button>
-      <button onClick={props.decrementAsync} disabled={props.isDecrementing}>
-        Decrement Async
-      </button>
-    </p>
+const news = [
+  {
+    title: 'There is something new coming up!',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    author: 'Auksinis Kardas',
+    picture: 'https://d30y9cdsu7xlg0.cloudfront.net/png/138926-200.png',
+    createdAt: '2018-04-06'
+  },
+  {
+    title: 'There is something new coming up!',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    author: 'Auksinis Kardas',
+    picture: 'https://d30y9cdsu7xlg0.cloudfront.net/png/138926-200.png',
+    createdAt: '2018-04-06'
+  }
+];
 
-    <p>
-      <button onClick={() => props.changePage()}>
-        Go to about page via redux
-      </button>
-    </p>
-  </div>
-);
+class Home extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      news: news
+    };
+  }
 
-const mapStateToProps = state => ({
-  count: state.counter.count,
-  isIncrementing: state.counter.isIncrementing,
-  isDecrementing: state.counter.isDecrementing
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      increment,
-      incrementAsync,
-      decrement,
-      decrementAsync,
-      changePage: () => push('/about-us')
-    },
-    dispatch
-  );
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+  render() {
+    return (
+      <div>
+        <div className="homepage" />
+        <Login />
+        <Grid
+          container
+          spacing={24}
+          className="fullWidth"
+          style={{ height: '100%' }}
+          alignContent="center"
+          justify="center">
+          <Grid
+            style={{
+              width: '100%',
+              height: '100%',
+              marginTop: '70px'
+            }}
+            item
+            md={6}>
+            <h1 style={{ textAlign: 'center' }}>News</h1>
+            {this.state.news.map((el, index) => {
+              return (
+                <Card key={index} style={{ marginBottom: '25px' }}>
+                  <CardHeader
+                    avatar={<Avatar aria-label="Recipe">AK</Avatar>}
+                    title={el.title}
+                    subheader={el.author}
+                  />
+                  <CardContent>
+                    <Typography component="p">{el.description}</Typography>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </Grid>
+        </Grid>
+      </div>
+    );
+  }
+}
+export default Home;

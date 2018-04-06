@@ -3,7 +3,7 @@ import Grid from 'material-ui/Grid';
 import Checkbox from 'material-ui/Checkbox';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 
-import Course from './Course';
+import CourseBox from './CourseBox';
 import CourseDialog from './CourseDialog';
 
 const courses = [
@@ -105,7 +105,7 @@ class Dashboard extends React.Component {
           {courses.map((el, index) => {
             return (
               <Grid item key={index}>
-                <Course
+                <CourseBox
                   title={el.title}
                   instructor={el.instructor}
                   description={el.description}
