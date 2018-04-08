@@ -2,6 +2,7 @@ import React from 'react';
 import { ChatFeed } from 'react-chat-ui';
 import List from 'material-ui/List';
 import Input from 'material-ui/Input';
+import axios from 'axios';
 
 class Chat extends React.Component {
   constructor() {
@@ -21,15 +22,34 @@ class Chat extends React.Component {
 
   keyPress(e) {
     if (e.keyCode === 13) {
-      console.log('value', e.target.value);
-
       let newMessage = {
         id: 0,
         message: e.target.value
       };
+
+      let axiosConfig = {
+        headers: {
+          'content-type': 'application/json-patch+json'
+        }
+      };
+
+      var postData = {
+        message: 'hi'
+      };
+
+      axios
+        .post('/api/bot', postData, axiosConfig)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
       this.setState(prevState => ({
         messages: this.state.messages.concat([newMessage])
       }));
+
       e.target.value = '';
     }
   }
