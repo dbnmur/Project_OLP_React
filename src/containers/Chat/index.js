@@ -14,7 +14,8 @@ class Chat extends React.Component {
           id: 1,
           message: 'Hey, what are you up to?'
         }
-      ]
+      ],
+      session: ''
     };
 
     this.keyPress = this.keyPress.bind(this);
@@ -29,7 +30,8 @@ class Chat extends React.Component {
 
       let axiosConfig = {
         headers: {
-          'content-type': 'application/json-patch+json'
+          'content-type': 'application/json-patch+json',
+          sessionId: this.state.session
         }
       };
 
@@ -45,7 +47,8 @@ class Chat extends React.Component {
               ...prevState.messages,
               newMessage,
               { id: 1, message: res.data.chatbotResponse }
-            ]
+            ],
+            session: res.data.sessionId
           }));
         })
         .catch(err => {
@@ -70,13 +73,14 @@ class Chat extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{ border: '1px solid #dedede' }}>
         <List
           style={{
-            maxHeight: '360px',
+            maxHeight: '500px',
             overflow: 'auto',
             width: '100%',
-            height: '500px'
+            minHeight: '500px',
+            background: '#f7f7f7'
           }}>
           <ChatFeed
             messages={this.state.messages}
@@ -102,7 +106,15 @@ class Chat extends React.Component {
         </List>
         <Input
           placeholder="Your message"
-          style={{ height: '40px', lineHeight: '40px', width: '100%' }}
+          style={{
+            height: '40px',
+            lineHeight: '40px',
+            width: '100%',
+            background: '#fffdfd',
+            borderTop: '1px solid #dedede',
+            padding: '10px'
+          }}
+          disableUnderline
           onKeyDown={this.keyPress}
           inputProps={{
             'aria-label': 'Description'

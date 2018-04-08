@@ -11,3 +11,7 @@
 button {
   margin-top: 10px;
 }
+
+.chat-messages {
+  margin: 0 10px;
+}
