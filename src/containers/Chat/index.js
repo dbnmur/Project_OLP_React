@@ -34,21 +34,23 @@ class Chat extends React.Component {
       };
 
       var postData = {
-        message: 'hi'
+        message: e.target.value
       };
 
       axios
         .post('/api/bot', postData, axiosConfig)
         .then(res => {
-          console.log(res);
+          this.setState(prevState => ({
+            messages: [
+              ...prevState.messages,
+              newMessage,
+              { id: 1, message: res.data.chatbotResponse }
+            ]
+          }));
         })
         .catch(err => {
           console.log(err);
         });
-
-      this.setState(prevState => ({
-        messages: this.state.messages.concat([newMessage])
-      }));
 
       e.target.value = '';
     }
