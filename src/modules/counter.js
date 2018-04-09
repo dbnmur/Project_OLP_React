@@ -1,4 +1,4 @@
-const newCourse = (state = {}, action) => {
+const newCourse = (state = { chatBots: [] }, action) => {
   switch (action.type) {
     case 'REGISTER_TITLE':
       return {
@@ -10,9 +10,21 @@ const newCourse = (state = {}, action) => {
         ...state,
         description: action.description
       };
-    case 'REGISTER_GROUP':
+    case 'REGISTER_CHAT_BOT':
       return {
-        group: action.group
+        ...state,
+        chatBot: action.chatBot
+      };
+    case 'ADD_CHAT_BOT':
+      return {
+        ...state,
+        chatBots: [
+          ...state.chatBots,
+          {
+            chatBotId: action.chatBotId,
+            name: action.name
+          }
+        ]
       };
     default:
       return state;

@@ -12,9 +12,17 @@ export const registerTitle = title => {
   };
 };
 
-export const registerGroup = group => {
+export const registerChatBot = chatBot => {
   return {
-    type: 'REGISTER_GROUP',
-    group
+    type: 'REGISTER_CHAT_BOT',
+    chatBot
+  };
+};
+
+export const addChatBot = ({ chatBotId, name }) => {
+  return {
+    type: 'ADD_CHAT_BOT',
+    chatBotId,
+    name
   };
 };

@@ -5,6 +5,9 @@ import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
+import Input, { InputLabel } from 'material-ui/Input';
+import { FormControl } from 'material-ui/Form';
+import axios from 'axios';
 
 import CustomSelect from '../../../CustomSelect';
 import {
@@ -15,7 +18,7 @@ import {
 const styles = theme => ({
   root: {
     minWidth: '90%',
-    height: '300px'
+    height: '450px'
   },
   button: {
     marginRight: theme.spacing.unit
@@ -49,7 +52,9 @@ class AddCourseStepper extends React.Component {
         group: []
       }
     };
+
     this.getStepContent = this.getStepContent.bind(this);
+    this.postNewCourse = this.postNewCourse.bind(this);
   }
 
   getStepContent(step) {
@@ -59,9 +64,9 @@ class AddCourseStepper extends React.Component {
       case 1:
         return (
           <CustomSelect
+            required
             value={this.state.courseCreation.group}
             title="Select chat bot"
-            menuItems={this.props.groups}
           />
         );
       case 2:
@@ -95,6 +100,24 @@ class AddCourseStepper extends React.Component {
     });
   };
 
+  postNewCourse() {
+    axios
+      .post('/api/courses', {
+        chatBotId: this.props.chatBotId,
+        name: this.props.title,
+        description: this.props.description
+      })
+      .then(response => {
+        console.log(response);
+        // TODO: closing and creation working; Don't forget to dispatch an action to clear newCourse information
+        this.props.myClick();
+      })
+      .catch(error => {
+        console.log(error);
+        this.props.myClick();
+      });
+  }
+
   render() {
     const { classes } = this.props;
     const steps = getSteps();
@@ -116,7 +139,7 @@ class AddCourseStepper extends React.Component {
         <div>
           <div>
             {this.getStepContent(activeStep)}
-            <div>
+            <div style={{ marginTop: '45px' }}>
               <Button
                 disabled={activeStep === 0}
                 onClick={this.handleBack}
@@ -128,7 +151,7 @@ class AddCourseStepper extends React.Component {
                 color="primary"
                 onClick={
                   activeStep === steps.length - 1
-                    ? this.props.myClick
+                    ? this.postNewCourse()
                     : this.handleNext
                 }
                 className={classes.button}>
@@ -142,19 +165,42 @@ class AddCourseStepper extends React.Component {
   }
 }
 
-let NewCourseSummary = ({ title, description }) => {
+const mapStateToStepperProps = state => {
+  return {
+    title: state.newCourse.title,
+    description: state.newCourse.description,
+    chatBotId: state.newCourse.chatBot
+  };
+};
+
+let NewCourseSummary = ({ title, description, chatBot }) => {
   return (
     <div>
-      <h1>{title}</h1>
-      <h1>{description}</h1>
+      <FormControl readOnly className="courseCreationFormControl" fullWidth>
+        <InputLabel htmlFor="name-simple">Course title</InputLabel>
+        <Input id="name-simple" value={title} />
+      </FormControl>
+      <FormControl readOnly className="courseCreationFormControl" fullWidth>
+        <InputLabel htmlFor="description-simple">Course description</InputLabel>
+        <Input multiline rows={5} id="description-simple" value={description} />
+      </FormControl>
+      <FormControl readOnly className="courseCreationFormControl" fullWidth>
+        <InputLabel htmlFor="bot-simple">Selected chat bot</InputLabel>
+        <Input id="bot-simple" value={chatBot.name || ''} />
+      </FormControl>
     </div>
   );
 };
 
 const mapStateFinishToProps = state => {
+  let bot = state.newCourse.chatBots.filter(el => {
+    return el.chatBotId === state.newCourse.chatBot;
+  });
+
   return {
     title: state.newCourse.title,
-    description: state.newCourse.description
+    description: state.newCourse.description,
+    chatBot: bot[0]
   };
 };
 
@@ -167,11 +213,12 @@ let NewCourseInfo = ({
   onDescriptionChange
 }) => {
   return (
-    <form className="loginForm" autoComplete="off">
+    <form autoComplete="off">
       <TextField
         id="title"
         fullWidth
         label="Course title"
+        required
         margin="normal"
         value={title || ''}
         onChange={e => {
@@ -184,6 +231,9 @@ let NewCourseInfo = ({
         label="Description"
         type="text"
         fullWidth
+        multiline
+        rows={5}
+        required
         margin="normal"
         value={description || ''}
         onChange={e => {
@@ -215,4 +265,6 @@ const mapDispatchToProps = dispatch => {
 
 NewCourseInfo = connect(mapStateToProps, mapDispatchToProps)(NewCourseInfo);
 
-export default withStyles(styles)(AddCourseStepper);
+export default withStyles(styles)(
+  connect(mapStateToStepperProps, null)(AddCourseStepper)
+);

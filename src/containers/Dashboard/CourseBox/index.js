@@ -17,7 +17,7 @@ const styles = {
 
 class CourseBox extends React.Component {
   render() {
-    const { classes, title, instructor, description } = this.props;
+    const { classes, title, description } = this.props;
     return (
       <div>
         <Card raised className={classes.card}>
@@ -28,7 +28,6 @@ class CourseBox extends React.Component {
             <Typography gutterBottom component="p">
               {description}
             </Typography>
-            <Typography component="p">{`Made by ${instructor}`}</Typography>
           </CardContent>
           <CardActions>
             <Link

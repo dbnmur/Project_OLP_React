@@ -5,27 +5,30 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import FloatButton from './FloatButton';
 import AddCourseStepper from './AddCourseStepper';
+import { addChatBot } from '../../../modules/actions';
 
-export default class CourseDialog extends React.Component {
+class CourseDialog extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      chatBots: [],
       isError: false,
       errorMessage: ''
     };
+
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentDidMount() {
     axios
       .get('/api/chatbots')
       .then(response => {
-        this.setState({
-          chatBots: response.data
+        response.data.forEach(el => {
+          this.props.onBotsGet(addChatBot(el));
         });
       })
       .catch(error => {
@@ -50,7 +53,7 @@ export default class CourseDialog extends React.Component {
         <FloatButton onClick={this.handleClickOpen} />
         <Dialog
           open={this.state.open}
-          style={{ minWidth: '500px', minHeight: '450px' }}
+          style={{ minWidth: '500px', height: '600px' }}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Add a new course</DialogTitle>
@@ -68,3 +71,13 @@ export default class CourseDialog extends React.Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onBotsGet: bot => {
+      dispatch(addChatBot(bot));
+    }
+  };
+};
+
+export default connect(null, mapDispatchToProps)(CourseDialog);

@@ -2,68 +2,30 @@ import React from 'react';
 import Grid from 'material-ui/Grid';
 import Checkbox from 'material-ui/Checkbox';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import axios from 'axios';
 
 import CourseBox from './CourseBox';
 import CourseDialog from './CourseDialog';
-
-const courses = [
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  },
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  },
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  },
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  },
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  },
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  },
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  },
-  {
-    title: 'Web Design',
-    instructor: 'Auksinis kardas',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-  }
-];
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      courses: courses,
+      courses: [],
       isInstructor: true
     };
+
+    this.getCoursesFromDatabase = this.getCoursesFromDatabase.bind(this);
+    this.getCoursesFromDatabase();
+  }
+
+  getCoursesFromDatabase() {
+    axios.get('/api/courses').then(response => {
+      this.setState(prevState => ({
+        ...prevState,
+        courses: response.data
+      }));
+    });
   }
 
   handleChange = name => event => {
@@ -93,7 +55,7 @@ class Dashboard extends React.Component {
           alignItems="center"
           style={{ width: '100%' }}>
           <Grid item>
-            <h1 style={{ marginBottom: '45px' }}>My courses</h1>
+            <h1 style={{ marginBottom: '45px' }}>Courses</h1>
           </Grid>
         </Grid>
         {/* Grid for courses */}
@@ -105,11 +67,7 @@ class Dashboard extends React.Component {
           {courses.map((el, index) => {
             return (
               <Grid item key={index}>
-                <CourseBox
-                  title={el.title}
-                  instructor={el.instructor}
-                  description={el.description}
-                />
+                <CourseBox title={el.name} description={el.description} />
               </Grid>
             );
           })}

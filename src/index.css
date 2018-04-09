@@ -41,3 +41,7 @@ button:disabled {
   filter: opacity(0.8);
   box-shadow: 0 2px 5px rgb(184, 175, 175);
 }
+
+.courseCreationFormControl {
+  margin-bottom: 15px !important;
+}
