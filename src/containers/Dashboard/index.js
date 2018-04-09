@@ -1,7 +1,5 @@
 import React from 'react';
 import Grid from 'material-ui/Grid';
-import Checkbox from 'material-ui/Checkbox';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import axios from 'axios';
 
 import CourseBox from './CourseBox';
@@ -36,18 +34,6 @@ class Dashboard extends React.Component {
     const { courses } = this.state;
     return (
       <Grid item md={12} sx={12} sm={12}>
-        <FormGroup row style={{ marginLeft: '45px' }}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={this.state.isInstructor}
-                onChange={this.handleChange('isInstructor')}
-                value="isInstructor"
-              />
-            }
-            label="Instructor"
-          />
-        </FormGroup>
         {/* Grid for title */}
         <Grid
           container
@@ -59,21 +45,27 @@ class Dashboard extends React.Component {
           </Grid>
         </Grid>
         {/* Grid for courses */}
-        <Grid
-          container
-          justify="center"
-          alignItems="center"
-          style={{ width: '100%' }}>
-          {courses.map((el, index) => {
-            return (
-              <Grid item key={index}>
-                <CourseBox title={el.name} description={el.description} />
-              </Grid>
-            );
-          })}
-          {/* Grid for add button */}
-        </Grid>
-        {this.state.isInstructor && (
+        {this.state.courses.length ? (
+          <Grid
+            container
+            justify="center"
+            alignItems="center"
+            style={{ width: '100%' }}>
+            {courses.map((el, index) => {
+              return (
+                <Grid item key={index}>
+                  <CourseBox title={el.name} description={el.description} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        ) : (
+          <h2 style={{ textAlign: 'center' }}>
+            There is no courses available. Create course by clicking the button
+            on the right.
+          </h2>
+        )}
+        {this.state.courses.length < 2 ? (
           <Grid
             container
             justify="flex-end"
@@ -83,6 +75,8 @@ class Dashboard extends React.Component {
               <CourseDialog />
             </Grid>
           </Grid>
+        ) : (
+          ''
         )}
       </Grid>
     );
