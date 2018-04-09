@@ -3,17 +3,12 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import Input, { InputLabel } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
 import axios from 'axios';
 
 import CustomSelect from '../../../CustomSelect';
-import {
-  registerTitle,
-  registerDescription
-} from '../../../../modules/actions';
+import NewCourseSummary from './NewCourseSummary';
+import NewCourseInfo from './NewCourseInfo';
 
 const styles = theme => ({
   root: {
@@ -170,105 +165,6 @@ const mapStateToStepperProps = state => {
     chatBotId: state.newCourse.chatBot
   };
 };
-
-let NewCourseSummary = ({ title, description, chatBot }) => {
-  return (
-    <div>
-      <FormControl readOnly className="courseCreationFormControl" fullWidth>
-        <InputLabel htmlFor="name-simple">Course title</InputLabel>
-        <Input id="name-simple" value={title} />
-      </FormControl>
-      <FormControl readOnly className="courseCreationFormControl" fullWidth>
-        <InputLabel htmlFor="description-simple">Course description</InputLabel>
-        <Input multiline rows={5} id="description-simple" value={description} />
-      </FormControl>
-      <FormControl readOnly className="courseCreationFormControl" fullWidth>
-        <InputLabel htmlFor="bot-simple">Selected chat bot</InputLabel>
-        <Input id="bot-simple" value={chatBot.name} />
-      </FormControl>
-    </div>
-  );
-};
-
-const mapStateFinishToProps = state => {
-  let bot;
-
-  if (!state.newCourse.chatBot) {
-    bot = '';
-  } else {
-    bot = state.newCourse.chatBots.filter(el => {
-      return el.chatBotId === state.newCourse.chatBot;
-    });
-    bot = bot[0];
-  }
-
-  return {
-    title: state.newCourse.title,
-    description: state.newCourse.description,
-    chatBot: bot
-  };
-};
-
-NewCourseSummary = connect(mapStateFinishToProps, {})(NewCourseSummary);
-
-let NewCourseInfo = ({
-  title,
-  description,
-  onTitleChange,
-  onDescriptionChange
-}) => {
-  return (
-    <form autoComplete="off">
-      <TextField
-        id="title"
-        fullWidth
-        label="Course title"
-        required
-        margin="normal"
-        value={title || ''}
-        onChange={e => {
-          e.preventDefault();
-          onTitleChange(e.target.value);
-        }}
-      />
-      <TextField
-        id="description"
-        label="Description"
-        type="text"
-        fullWidth
-        multiline
-        rows={5}
-        required
-        margin="normal"
-        value={description || ''}
-        onChange={e => {
-          e.preventDefault();
-          onDescriptionChange(e.target.value);
-        }}
-      />
-    </form>
-  );
-};
-
-const mapStateToProps = state => {
-  return {
-    title: state.newCourse.title,
-    description: state.newCourse.description
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onTitleChange: text => {
-      dispatch(registerTitle(text));
-    },
-    onDescriptionChange: description => {
-      dispatch(registerDescription(description));
-    }
-  };
-};
-
-NewCourseInfo = connect(mapStateToProps, mapDispatchToProps)(NewCourseInfo);
 
 export default withStyles(styles)(
   connect(mapStateToStepperProps, null)(AddCourseStepper)

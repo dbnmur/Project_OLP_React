@@ -58,7 +58,9 @@ class Dashboard extends React.Component {
             alignItems="center"
             style={{ width: '100%' }}>
             <Grid item>
-              <h2>Loading, thank you for your patient</h2>
+              <h2 style={{ textAlign: 'center', fontWeight: '400' }}>
+                Loading, thank you for your patients
+              </h2>
             </Grid>
           </Grid>
         ) : this.state.courses.length ? (
@@ -76,9 +78,9 @@ class Dashboard extends React.Component {
             })}
           </Grid>
         ) : (
-          <h2 style={{ textAlign: 'center' }}>
-            There is no courses available. Create course by clicking the button
-            on the right.
+          <h2 style={{ textAlign: 'center', fontWeight: '400' }}>
+            There is no courses available. Create a course by clicking the
+            button on the right.
           </h2>
         )}
         {this.state.courses.length < 2 && !this.state.isLoading ? (
