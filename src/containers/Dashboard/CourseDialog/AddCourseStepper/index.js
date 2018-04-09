@@ -110,11 +110,9 @@ class AddCourseStepper extends React.Component {
       .then(response => {
         console.log(response);
         // TODO: closing and creation working; Don't forget to dispatch an action to clear newCourse information
-        this.props.myClick();
       })
       .catch(error => {
         console.log(error);
-        this.props.myClick();
       });
   }
 
@@ -186,21 +184,28 @@ let NewCourseSummary = ({ title, description, chatBot }) => {
       </FormControl>
       <FormControl readOnly className="courseCreationFormControl" fullWidth>
         <InputLabel htmlFor="bot-simple">Selected chat bot</InputLabel>
-        <Input id="bot-simple" value={chatBot.name || ''} />
+        <Input id="bot-simple" value={chatBot.name} />
       </FormControl>
     </div>
   );
 };
 
 const mapStateFinishToProps = state => {
-  let bot = state.newCourse.chatBots.filter(el => {
-    return el.chatBotId === state.newCourse.chatBot;
-  });
+  let bot;
+
+  if (!state.newCourse.chatBot) {
+    bot = '';
+  } else {
+    bot = state.newCourse.chatBots.filter(el => {
+      return el.chatBotId === state.newCourse.chatBot;
+    });
+    bot = bot[0];
+  }
 
   return {
     title: state.newCourse.title,
     description: state.newCourse.description,
-    chatBot: bot[0]
+    chatBot: bot
   };
 };
 

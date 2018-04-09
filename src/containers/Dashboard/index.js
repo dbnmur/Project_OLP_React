@@ -10,18 +10,24 @@ class Dashboard extends React.Component {
     super(props);
     this.state = {
       courses: [],
-      isInstructor: true
+      isInstructor: true,
+      isLoading: true
     };
 
     this.getCoursesFromDatabase = this.getCoursesFromDatabase.bind(this);
     this.getCoursesFromDatabase();
   }
 
+  componentDidMount() {
+    setTimeout(() => this.setState({ isLoading: false }), 1500);
+  }
+
   getCoursesFromDatabase() {
     axios.get('/api/courses').then(response => {
       this.setState(prevState => ({
         ...prevState,
-        courses: response.data
+        courses: response.data,
+        isLoading: false
       }));
     });
   }
@@ -45,7 +51,17 @@ class Dashboard extends React.Component {
           </Grid>
         </Grid>
         {/* Grid for courses */}
-        {this.state.courses.length ? (
+        {this.state.isLoading ? (
+          <Grid
+            container
+            justify="center"
+            alignItems="center"
+            style={{ width: '100%' }}>
+            <Grid item>
+              <h2>Loading, thank you for your patient</h2>
+            </Grid>
+          </Grid>
+        ) : this.state.courses.length ? (
           <Grid
             container
             justify="center"
@@ -65,7 +81,7 @@ class Dashboard extends React.Component {
             on the right.
           </h2>
         )}
-        {this.state.courses.length < 2 ? (
+        {this.state.courses.length < 2 && !this.state.isLoading ? (
           <Grid
             container
             justify="flex-end"
