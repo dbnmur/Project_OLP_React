@@ -62,7 +62,7 @@ class Dashboard extends React.Component {
     super(props);
     this.state = {
       courses: courses,
-      isInstructor: false
+      isInstructor: true
     };
   }
 

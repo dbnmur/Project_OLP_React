@@ -33,7 +33,7 @@ class CustomSelect extends React.Component {
             {menuItems.map((el, index) => {
               return (
                 <MenuItem key={index} value={index}>
-                  {el}
+                  {el.name}
                 </MenuItem>
               );
             })}

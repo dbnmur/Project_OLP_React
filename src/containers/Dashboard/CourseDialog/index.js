@@ -14,36 +14,25 @@ export default class CourseDialog extends React.Component {
     super(props);
     this.state = {
       open: false,
-      groups: [],
+      chatBots: [],
       isError: false,
       errorMessage: ''
     };
-
-    this.extractGroupNamesFromObject = this.extractGroupNamesFromObject.bind(
-      this
-    );
   }
-
-  extractGroupNamesFromObject = arr => {
-    let temp = [];
-
-    arr.forEach(el => {
-      temp.push(el.name);
-    });
-
-    return temp;
-  };
 
   componentDidMount() {
     axios
-      .get('/api/groups')
+      .get('/api/chatbots')
       .then(response => {
         this.setState({
-          groups: this.extractGroupNamesFromObject(response.data)
+          chatBots: response.data
         });
       })
       .catch(error => {
-        return error;
+        this.setState({
+          isError: true,
+          errorMessage: error
+        });
       });
   }
 
@@ -70,7 +59,7 @@ export default class CourseDialog extends React.Component {
               To add a new course fill the form below
             </DialogContentText>
             <AddCourseStepper
-              groups={this.state.groups}
+              groups={this.state.chatBots}
               myClick={this.handleClose}
             />
           </DialogContent>
