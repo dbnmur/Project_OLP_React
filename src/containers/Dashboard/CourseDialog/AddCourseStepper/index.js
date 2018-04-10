@@ -9,6 +9,7 @@ import axios from 'axios';
 import CustomSelect from '../../../CustomSelect';
 import NewCourseSummary from './NewCourseSummary';
 import NewCourseInfo from './NewCourseInfo';
+import { toggleCourseDialog, addCourse } from '../../../../modules/actions';
 
 const styles = theme => ({
   root: {
@@ -105,6 +106,8 @@ class AddCourseStepper extends React.Component {
       .then(response => {
         console.log(response);
         // TODO: closing and creation working; Don't forget to dispatch an action to clear newCourse information
+        this.props.onFinish(false);
+        this.props.onCourseAdd(response.data);
       })
       .catch(error => {
         console.log(error);
@@ -131,7 +134,9 @@ class AddCourseStepper extends React.Component {
         </Stepper>
         <div>
           <div>
-            {this.getStepContent(activeStep)}
+            <div style={{ height: '250px' }}>
+              {this.getStepContent(activeStep)}
+            </div>
             <div style={{ marginTop: '45px' }}>
               <Button
                 disabled={activeStep === 0}
@@ -144,7 +149,7 @@ class AddCourseStepper extends React.Component {
                 color="primary"
                 onClick={
                   activeStep === steps.length - 1
-                    ? this.postNewCourse()
+                    ? this.postNewCourse
                     : this.handleNext
                 }
                 className={classes.button}>
@@ -162,10 +167,22 @@ const mapStateToStepperProps = state => {
   return {
     title: state.newCourse.title,
     description: state.newCourse.description,
-    chatBotId: state.newCourse.chatBot
+    chatBotId: state.newCourse.chatBot,
+    open: state.newCourse.open
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onFinish: open => {
+      dispatch(toggleCourseDialog(open));
+    },
+    onCourseAdd: course => {
+      dispatch(addCourse(course));
+    }
   };
 };
 
 export default withStyles(styles)(
-  connect(mapStateToStepperProps, null)(AddCourseStepper)
+  connect(mapStateToStepperProps, mapDispatchToProps)(AddCourseStepper)
 );

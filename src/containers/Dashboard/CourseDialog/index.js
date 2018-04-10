@@ -4,55 +4,38 @@ import Dialog, {
   DialogContentText,
   DialogTitle
 } from 'material-ui/Dialog';
-import axios from 'axios';
 import { connect } from 'react-redux';
 
 import FloatButton from './FloatButton';
 import AddCourseStepper from './AddCourseStepper';
-import { addChatBot } from '../../../modules/actions';
+import { toggleCourseDialog } from '../../../modules/actions';
 
 class CourseDialog extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.state = {
-      open: false,
       isError: false,
       errorMessage: ''
     };
 
+    this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
-  componentDidMount() {
-    axios
-      .get('/api/chatbots')
-      .then(response => {
-        response.data.forEach(el => {
-          this.props.onBotsGet(addChatBot(el));
-        });
-      })
-      .catch(error => {
-        this.setState({
-          isError: true,
-          errorMessage: error
-        });
-      });
+  handleClickOpen() {
+    this.props.onClose(true);
   }
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  handleClose() {
+    this.props.onClose(false);
+  }
 
   render() {
     return (
       <div>
         <FloatButton onClick={this.handleClickOpen} />
         <Dialog
-          open={this.state.open}
+          open={this.props.open}
           style={{ minWidth: '500px', height: '600px' }}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title">
@@ -72,12 +55,18 @@ class CourseDialog extends React.Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    open: state.newCourse.open
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
-    onBotsGet: bot => {
-      dispatch(addChatBot(bot));
+    onClose: isOpen => {
+      dispatch(toggleCourseDialog(isOpen));
     }
   };
 };
 
-export default connect(null, mapDispatchToProps)(CourseDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(CourseDialog);

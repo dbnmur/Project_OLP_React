@@ -26,3 +26,19 @@ export const addChatBot = ({ chatBotId, name }) => {
     name
   };
 };
+
+export const addCourse = ({ name, description, chatBotId }) => {
+  return {
+    type: 'ADD_COURSE',
+    name,
+    description,
+    chatBotId
+  };
+};
+
+export const toggleCourseDialog = open => {
+  return {
+    type: 'IS_COURSE_DIALOG_OPEN',
+    open
+  };
+};

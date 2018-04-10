@@ -1,17 +1,21 @@
 import React from 'react';
 import Grid from 'material-ui/Grid';
+import { CircularProgress } from 'material-ui/Progress';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import CourseBox from './CourseBox';
 import CourseDialog from './CourseDialog';
+import { addChatBot, addCourse } from '../../modules/actions';
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      courses: [],
       isInstructor: true,
-      isLoading: true
+      isLoading: true,
+      isError: false,
+      errorMessage: ''
     };
 
     this.getCoursesFromDatabase = this.getCoursesFromDatabase.bind(this);
@@ -19,16 +23,27 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => this.setState({ isLoading: false }), 1500);
+    axios
+      .get('/api/chatbots')
+      .then(response => {
+        response.data.forEach(el => {
+          this.props.onBotsGet(el);
+        });
+        this.setState({ isLoading: false });
+      })
+      .catch(error => {
+        this.setState({
+          isError: true,
+          errorMessage: error
+        });
+      });
   }
 
   getCoursesFromDatabase() {
     axios.get('/api/courses').then(response => {
-      this.setState(prevState => ({
-        ...prevState,
-        courses: response.data,
-        isLoading: false
-      }));
+      response.data.forEach(el => {
+        this.props.onCourseGet(el);
+      });
     });
   }
 
@@ -37,7 +52,6 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { courses } = this.state;
     return (
       <Grid item md={12} sx={12} sm={12}>
         {/* Grid for title */}
@@ -58,18 +72,16 @@ class Dashboard extends React.Component {
             alignItems="center"
             style={{ width: '100%' }}>
             <Grid item>
-              <h2 style={{ textAlign: 'center', fontWeight: '400' }}>
-                Loading, thank you for your patients
-              </h2>
+              <CircularProgress />
             </Grid>
           </Grid>
-        ) : this.state.courses.length ? (
+        ) : this.props.courses.length ? (
           <Grid
             container
             justify="center"
             alignItems="center"
             style={{ width: '100%' }}>
-            {courses.map((el, index) => {
+            {this.props.courses.map((el, index) => {
               return (
                 <Grid item key={index}>
                   <CourseBox title={el.name} description={el.description} />
@@ -83,7 +95,7 @@ class Dashboard extends React.Component {
             button on the right.
           </h2>
         )}
-        {this.state.courses.length < 2 && !this.state.isLoading ? (
+        {this.props.courses.length < 2 && !this.state.isLoading ? (
           <Grid
             container
             justify="flex-end"
@@ -101,4 +113,21 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+const mapStateToProps = state => {
+  return {
+    courses: state.newCourse.courses
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onBotsGet: bot => {
+      dispatch(addChatBot(bot));
+    },
+    onCourseGet: course => {
+      dispatch(addCourse(course));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

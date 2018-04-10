@@ -1,4 +1,7 @@
-const newCourse = (state = { chatBots: [] }, action) => {
+const newCourse = (
+  state = { chatBots: [], courses: [], open: false },
+  action
+) => {
   switch (action.type) {
     case 'REGISTER_TITLE':
       return {
@@ -25,6 +28,23 @@ const newCourse = (state = { chatBots: [] }, action) => {
             name: action.name
           }
         ]
+      };
+    case 'ADD_COURSE':
+      return {
+        ...state,
+        courses: [
+          ...state.courses,
+          {
+            name: action.name,
+            description: action.description,
+            chatBotId: action.chatBotId
+          }
+        ]
+      };
+    case 'IS_COURSE_DIALOG_OPEN':
+      return {
+        ...state,
+        open: action.open
       };
     default:
       return state;
