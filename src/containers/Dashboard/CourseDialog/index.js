@@ -5,10 +5,17 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import FloatButton from './FloatButton';
 import AddCourseStepper from './AddCourseStepper';
-import { toggleCourseDialog } from '../../../modules/actions';
+import {
+  toggleCourseDialog,
+  addChatBot,
+  registerTitle,
+  registerDescription,
+  registerChatBot
+} from '../../../modules/actions';
 
 class CourseDialog extends React.Component {
   constructor(props, context) {
@@ -22,12 +29,37 @@ class CourseDialog extends React.Component {
     this.handleClose = this.handleClose.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.chatBots.length > 0) {
+      return;
+    } else {
+      axios
+        .get('/api/chatbots')
+        .then(response => {
+          response.data.forEach(el => {
+            this.props.onBotsGet(el);
+          });
+        })
+        .catch(error => {
+          this.setState({
+            isError: true,
+            errorMessage: error
+          });
+        });
+    }
+  }
+
+  componentWillUnmount() {}
+
   handleClickOpen() {
     this.props.onClose(true);
   }
 
   handleClose() {
     this.props.onClose(false);
+    this.props.onTitleChange('');
+    this.props.onDescriptionChange('');
+    this.props.onChatBotChange('');
   }
 
   render() {
@@ -57,7 +89,8 @@ class CourseDialog extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    open: state.newCourse.open
+    open: state.newCourse.open,
+    chatBots: state.newCourse.chatBots
   };
 };
 
@@ -65,6 +98,18 @@ const mapDispatchToProps = dispatch => {
   return {
     onClose: isOpen => {
       dispatch(toggleCourseDialog(isOpen));
+    },
+    onBotsGet: bot => {
+      dispatch(addChatBot(bot));
+    },
+    onChatBotChange: chatbot => {
+      dispatch(registerChatBot(chatbot));
+    },
+    onTitleChange: title => {
+      dispatch(registerTitle(title));
+    },
+    onDescriptionChange: des => {
+      dispatch(registerDescription(des));
     }
   };
 };

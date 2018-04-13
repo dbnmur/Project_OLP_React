@@ -74,7 +74,7 @@ class App extends React.Component {
           <Route exact path="/about-us" component={About} />
           <Route exact path="/admin" component={AdminPanel} />
           <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/course" component={Course} />
+          <Route exact path="/courses/:courseid" component={Course} />
           <Switch>
             <Route exact path="/login" render={() => this.renderHome()} />
             <Route

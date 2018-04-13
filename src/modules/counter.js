@@ -35,6 +35,7 @@ const newCourse = (
         courses: [
           ...state.courses,
           {
+            courseId: action.courseId,
             name: action.name,
             description: action.description,
             chatBotId: action.chatBotId

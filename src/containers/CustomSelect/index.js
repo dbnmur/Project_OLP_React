@@ -8,13 +8,26 @@ import { connect } from 'react-redux';
 import { registerChatBot } from '../../modules/actions';
 
 class CustomSelect extends React.Component {
-  state = {
-    role: ''
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      role: '',
+      error: false
+    };
+    this.validationFunction = this.validationFunction.bind(this);
+  }
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
+
+  validationFunction(node) {
+    if (node.value === '' || node.value === undefined) {
+      this.setState({ error: true });
+    } else {
+      this.setState({ error: false });
+    }
+  }
 
   render() {
     return (
@@ -22,9 +35,11 @@ class CustomSelect extends React.Component {
         <FormControl fullWidth>
           <InputLabel htmlFor="role">{this.props.title}</InputLabel>
           <Select
-            value={this.props.chatBot || ''}
+            error={this.state.error}
+            value={this.props.chatBot || 'Select'}
             onChange={e => {
               this.props.onChange(e.target.value);
+              this.validationFunction(e.target);
             }}
             inputProps={{
               name: 'chatBot',
@@ -35,7 +50,12 @@ class CustomSelect extends React.Component {
             </MenuItem>
             {this.props.chatBots.map((el, index) => {
               return (
-                <MenuItem key={index} value={el.chatBotId}>
+                <MenuItem
+                  onBlur={e => {
+                    this.validationFunction(e.target);
+                  }}
+                  key={index}
+                  value={el.chatBotId}>
                   {el.name}
                 </MenuItem>
               );

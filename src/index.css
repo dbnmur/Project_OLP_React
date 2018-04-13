@@ -49,3 +49,7 @@ button:disabled {
 .courseCreationFormControl {
   margin-bottom: 15px !important;
 }
+
+.textFieldOnError::before {
+  background-color: red !important;
+}

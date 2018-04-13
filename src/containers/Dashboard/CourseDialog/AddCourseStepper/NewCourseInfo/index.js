@@ -7,44 +7,62 @@ import {
   registerDescription
 } from '../../../../../modules/actions';
 
-const NewCourseInfo = ({
-  title,
-  description,
-  onTitleChange,
-  onDescriptionChange
-}) => {
-  return (
-    <form autoComplete="off">
-      <TextField
-        id="title"
-        fullWidth
-        label="Course title"
-        required
-        margin="normal"
-        value={title || ''}
-        onChange={e => {
-          e.preventDefault();
-          onTitleChange(e.target.value);
-        }}
-      />
-      <TextField
-        id="description"
-        label="Description"
-        type="text"
-        fullWidth
-        multiline
-        rows={5}
-        required
-        margin="normal"
-        value={description || ''}
-        onChange={e => {
-          e.preventDefault();
-          onDescriptionChange(e.target.value);
-        }}
-      />
-    </form>
-  );
-};
+class NewCourseInfo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: false
+    };
+
+    this.validationFunction = this.validationFunction.bind(this);
+  }
+
+  validationFunction(node) {
+    if (node.value === '') {
+      this.setState({ error: true });
+    } else {
+      this.setState({ error: false });
+    }
+  }
+
+  render() {
+    return (
+      <form autoComplete="off">
+        <TextField
+          id="title"
+          fullWidth
+          label="Course title"
+          required
+          margin="normal"
+          error={this.state.error}
+          value={this.props.title || ''}
+          onBlur={e => {
+            e.preventDefault();
+            this.validationFunction(e.target);
+          }}
+          onChange={e => {
+            e.preventDefault();
+            this.props.onTitleChange(e.target.value);
+          }}
+        />
+        <TextField
+          id="description"
+          label="Description"
+          type="text"
+          fullWidth
+          multiline
+          rows={5}
+          margin="normal"
+          value={this.props.description || ''}
+          onChange={e => {
+            e.preventDefault();
+            this.props.onDescriptionChange(e.target.value);
+          }}
+        />
+      </form>
+    );
+  }
+}
 
 const mapStateToProps = state => {
   return {

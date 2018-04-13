@@ -27,9 +27,10 @@ export const addChatBot = ({ chatBotId, name }) => {
   };
 };
 
-export const addCourse = ({ name, description, chatBotId }) => {
+export const addCourse = ({ name, description, chatBotId, courseId }) => {
   return {
     type: 'ADD_COURSE',
+    courseId,
     name,
     description,
     chatBotId

@@ -104,8 +104,6 @@ class AddCourseStepper extends React.Component {
         description: this.props.description
       })
       .then(response => {
-        console.log(response);
-        // TODO: closing and creation working; Don't forget to dispatch an action to clear newCourse information
         this.props.onFinish(false);
         this.props.onCourseAdd(response.data);
       })
@@ -145,6 +143,7 @@ class AddCourseStepper extends React.Component {
                 Back
               </Button>
               <Button
+                disabled={!this.props.title}
                 variant="raised"
                 color="primary"
                 onClick={
@@ -153,7 +152,7 @@ class AddCourseStepper extends React.Component {
                     : this.handleNext
                 }
                 className={classes.button}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {activeStep === steps.length - 1 ? 'Add course' : 'Next'}
               </Button>
             </div>
           </div>
@@ -168,7 +167,8 @@ const mapStateToStepperProps = state => {
     title: state.newCourse.title,
     description: state.newCourse.description,
     chatBotId: state.newCourse.chatBot,
-    open: state.newCourse.open
+    open: state.newCourse.open,
+    error: state.newCourse.error
   };
 };
 

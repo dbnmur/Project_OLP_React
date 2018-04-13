@@ -17,7 +17,7 @@ const styles = {
 
 class CourseBox extends React.Component {
   render() {
-    const { classes, title, description } = this.props;
+    const { classes, title, description, id } = this.props;
     return (
       <div>
         <Card raised className={classes.card}>
@@ -32,7 +32,7 @@ class CourseBox extends React.Component {
           <CardActions>
             <Link
               style={{ textDecoration: 'none', color: 'black' }}
-              to="/course">
+              to={`/courses/${id}`}>
               <Button size="small" color="primary">
                 Read more
               </Button>

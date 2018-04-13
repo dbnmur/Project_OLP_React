@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import CourseBox from './CourseBox';
 import CourseDialog from './CourseDialog';
-import { addChatBot, addCourse } from '../../modules/actions';
+import { addCourse } from '../../modules/actions';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -18,33 +18,32 @@ class Dashboard extends React.Component {
       errorMessage: ''
     };
 
-    this.getCoursesFromDatabase = this.getCoursesFromDatabase.bind(this);
-    this.getCoursesFromDatabase();
+    this.getCoursesFromDatabaseToState = this.getCoursesFromDatabaseToState.bind(
+      this
+    );
   }
 
   componentDidMount() {
-    axios
-      .get('/api/chatbots')
-      .then(response => {
-        response.data.forEach(el => {
-          this.props.onBotsGet(el);
-        });
-        this.setState({ isLoading: false });
-      })
-      .catch(error => {
-        this.setState({
-          isError: true,
-          errorMessage: error
-        });
-      });
+    this.getCoursesFromDatabaseToState();
   }
 
-  getCoursesFromDatabase() {
-    axios.get('/api/courses').then(response => {
-      response.data.forEach(el => {
-        this.props.onCourseGet(el);
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.courses !== nextState.courses;
+  }
+
+  getCoursesFromDatabaseToState() {
+    if (this.props.courses.length > 0) {
+      setTimeout(() => {
+        this.setState({ isLoading: false });
+      }, 750);
+    } else {
+      axios.get('/api/courses').then(response => {
+        response.data.forEach(el => {
+          this.props.onCourseGet(el);
+        });
+        this.setState({ isLoading: false });
       });
-    });
+    }
   }
 
   handleChange = name => event => {
@@ -84,7 +83,11 @@ class Dashboard extends React.Component {
             {this.props.courses.map((el, index) => {
               return (
                 <Grid item key={index}>
-                  <CourseBox title={el.name} description={el.description} />
+                  <CourseBox
+                    title={el.name}
+                    description={el.description}
+                    id={el.courseId}
+                  />
                 </Grid>
               );
             })}
@@ -121,9 +124,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onBotsGet: bot => {
-      dispatch(addChatBot(bot));
-    },
     onCourseGet: course => {
       dispatch(addCourse(course));
     }
