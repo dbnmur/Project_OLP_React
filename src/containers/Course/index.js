@@ -7,6 +7,7 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import TextField from 'material-ui/TextField';
 import KeyBoardArrowRight from 'material-ui-icons/KeyboardArrowRight';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import Chat from '../Chat';
 import Expansion from './Expansion';
@@ -47,6 +48,9 @@ class Course extends React.Component {
     axios
       .post('/api/modules', postData, axiosConfig)
       .then(res => {
+        this.setState(prevState => ({
+          modules: [...prevState.modules, res.data]
+        }));
         this.handleMenuClose();
       })
       .catch(err => {
@@ -90,42 +94,46 @@ class Course extends React.Component {
             justify="flex-start"
             alignItems="center">
             <h1>{this.state.course.name}</h1>
-            <Tooltip title="Add new module">
-              <Button
-                style={{ float: 'left', marginLeft: '25px' }}
-                variant="fab"
-                mini
-                color="secondary"
-                aria-label="add"
-                aria-owns={this.state.menuParent ? 'simple-menu' : null}
-                aria-haspopup="true"
-                onClick={this.handleMenuClick}>
-                <CreateNewFolder />
-              </Button>
-            </Tooltip>
-            <Menu
-              id="simple-menu"
-              style={{ left: '75px' }}
-              open={Boolean(this.state.menuParent)}
-              onClose={this.handleMenuClose}
-              anchorEl={this.state.menuParent}>
-              <MenuItem>
-                <TextField
-                  id="name"
-                  label="New module name"
-                  margin="normal"
-                  size="small"
-                  onChange={this.keyPress}
-                />
-                <Button
-                  variant="raised"
-                  color="secondary"
-                  mini
-                  onClick={this.handleNewModuleClick}>
-                  <KeyBoardArrowRight />
-                </Button>
-              </MenuItem>
-            </Menu>
+            {this.props.isTeacher && (
+              <div>
+                <Tooltip title="Add new module">
+                  <Button
+                    style={{ float: 'left', marginLeft: '25px' }}
+                    variant="fab"
+                    mini
+                    color="secondary"
+                    aria-label="add"
+                    aria-owns={this.state.menuParent ? 'simple-menu' : null}
+                    aria-haspopup="true"
+                    onClick={this.handleMenuClick}>
+                    <CreateNewFolder />
+                  </Button>
+                </Tooltip>
+                <Menu
+                  id="simple-menu"
+                  style={{ left: '75px' }}
+                  open={Boolean(this.state.menuParent)}
+                  onClose={this.handleMenuClose}
+                  anchorEl={this.state.menuParent}>
+                  <MenuItem>
+                    <TextField
+                      id="name"
+                      label="New module name"
+                      margin="normal"
+                      size="small"
+                      onChange={this.keyPress}
+                    />
+                    <Button
+                      variant="raised"
+                      color="secondary"
+                      mini
+                      onClick={this.handleNewModuleClick}>
+                      <KeyBoardArrowRight />
+                    </Button>
+                  </MenuItem>
+                </Menu>
+              </div>
+            )}
           </Grid>
           {this.state.modules.map((el, index) => {
             return (
@@ -147,4 +155,10 @@ class Course extends React.Component {
   }
 }
 
-export default Course;
+const mapStateToProps = state => {
+  return {
+    isTeacher: state.newCourse.isTeacher
+  };
+};
+
+export default connect(mapStateToProps, null)(Course);

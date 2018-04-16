@@ -5,8 +5,11 @@ import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import TemporaryDrawer from './Drawer';
+import { connect } from 'react-redux';
+import Button from 'material-ui/Button';
 
 import { Link } from 'react-router-dom';
+import { isTeacher } from '../../modules/actions';
 
 const styles = {
   root: {
@@ -22,6 +25,17 @@ const styles = {
 };
 
 class ButtonAppBar extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.changeUser = this.changeUser.bind(this);
+  }
+
+  changeUser() {
+    let user = !this.props.isTeacher;
+    this.props.onClickChangeUser(user);
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -35,6 +49,15 @@ class ButtonAppBar extends React.Component {
                 Home
               </Link>
             </Typography>
+            {this.props.isTeacher ? (
+              <Button onClick={this.changeUser} color="inherit">
+                View as student
+              </Button>
+            ) : (
+              <Button onClick={this.changeUser} color="inherit">
+                View as Teacher
+              </Button>
+            )}
           </Toolbar>
         </AppBar>
       </div>
@@ -46,4 +69,20 @@ ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(ButtonAppBar);
+const mapStateToProps = state => {
+  return {
+    isTeacher: state.newCourse.isTeacher
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onClickChangeUser: user => {
+      dispatch(isTeacher(user));
+    }
+  };
+};
+
+export default withStyles(styles)(
+  connect(mapStateToProps, mapDispatchToProps)(ButtonAppBar)
+);

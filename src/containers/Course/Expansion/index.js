@@ -4,7 +4,6 @@ import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
 } from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import InboxIcon from 'material-ui-icons/Assignment';
 import Add from 'material-ui-icons/Add';
@@ -16,7 +15,12 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
+import MoreVert from 'material-ui-icons/MoreVert';
+import IconButton from 'material-ui/IconButton';
+import ModeEdit from 'material-ui-icons/ModeEdit';
+import Delete from 'material-ui-icons/Delete';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 class Expansion extends React.Component {
   constructor(props) {
@@ -76,8 +80,10 @@ class Expansion extends React.Component {
     return (
       <div>
         <ExpansionPanel key={this.props.index}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{this.props.title}</Typography>
+          <ExpansionPanelSummary>
+            <div>
+              <Typography>{this.props.title}</Typography>
+            </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <List style={{ width: '100%' }}>
@@ -88,14 +94,29 @@ class Expansion extends React.Component {
                       <InboxIcon />
                     </ListItemIcon>
                     <ListItemText primary={item.name} />
+                    {this.props.isTeacher && (
+                      <div>
+                        <IconButton>
+                          <ModeEdit
+                            color="primary"
+                            style={{ marginLeft: '5px' }}
+                          />
+                        </IconButton>
+                        <IconButton>
+                          <Delete color="secondary" />
+                        </IconButton>
+                      </div>
+                    )}
                   </ListItem>
                 );
               })}
-              <ListItem button dense onClick={this.handleClickOpen}>
-                <ListItemIcon>
-                  <Add style={{ margin: '0 auto' }} />
-                </ListItemIcon>
-              </ListItem>
+              {this.props.isTeacher && (
+                <ListItem button dense onClick={this.handleClickOpen}>
+                  <ListItemIcon>
+                    <Add style={{ margin: '0 auto' }} />
+                  </ListItemIcon>
+                </ListItem>
+              )}
             </List>
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -150,4 +171,10 @@ class Expansion extends React.Component {
   }
 }
 
-export default Expansion;
+const mapStateToProps = state => {
+  return {
+    isTeacher: state.newCourse.isTeacher
+  };
+};
+
+export default connect(mapStateToProps, null)(Expansion);

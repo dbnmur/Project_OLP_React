@@ -43,3 +43,10 @@ export const toggleCourseDialog = open => {
     open
   };
 };
+
+export const isTeacher = isTeacher => {
+  return {
+    type: 'IS_TEACHER',
+    isTeacher
+  };
+};
