@@ -24,6 +24,7 @@ class Course extends React.Component {
     this.handleMenuClose = this.handleMenuClose.bind(this);
     this.handleNewModuleClick = this.handleNewModuleClick.bind(this);
     this.keyPress = this.keyPress.bind(this);
+    this.extractModulesFromCourse = this.extractModulesFromCourse.bind(this);
   }
 
   keyPress(e) {
@@ -45,7 +46,9 @@ class Course extends React.Component {
 
     axios
       .post('/api/modules', postData, axiosConfig)
-      .then(res => {})
+      .then(res => {
+        this.handleMenuClose();
+      })
       .catch(err => {
         console.log(err);
       });
@@ -59,20 +62,24 @@ class Course extends React.Component {
     this.setState({ menuParent: null });
   };
 
+  extractModulesFromCourse(modules) {
+    modules.forEach(el => {
+      this.setState(prevState => ({
+        modules: [...prevState.modules, el]
+      }));
+    });
+  }
+
   componentDidMount() {
     const { match: { params } } = this.props;
 
     axios.get(`/api/courses/${params.courseid}`).then(res => {
+      this.extractModulesFromCourse(res.data.modules);
       this.setState({ course: res.data });
-    });
-
-    axios.get('/api/modules').then(res => {
-      this.setState({ modules: res.data });
     });
   }
 
   render() {
-    console.log(this.state.course);
     return (
       <Grid container spacing={8} style={{ width: '100%' }} justify="center">
         <Grid item md={5} sm={12} style={{ width: '100%' }}>
@@ -80,57 +87,53 @@ class Course extends React.Component {
             container
             spacing={8}
             style={{ width: '100%' }}
-            justify="flex-end"
+            justify="flex-start"
             alignItems="center">
-            <Grid item md={6} sm={6}>
-              <h1>{this.state.course.name}</h1>
-            </Grid>
-            <Grid item md={6} sm={6}>
-              <Tooltip title="Add new module">
+            <h1>{this.state.course.name}</h1>
+            <Tooltip title="Add new module">
+              <Button
+                style={{ float: 'left', marginLeft: '25px' }}
+                variant="fab"
+                mini
+                color="secondary"
+                aria-label="add"
+                aria-owns={this.state.menuParent ? 'simple-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleMenuClick}>
+                <CreateNewFolder />
+              </Button>
+            </Tooltip>
+            <Menu
+              id="simple-menu"
+              style={{ left: '75px' }}
+              open={Boolean(this.state.menuParent)}
+              onClose={this.handleMenuClose}
+              anchorEl={this.state.menuParent}>
+              <MenuItem>
+                <TextField
+                  id="name"
+                  label="New module name"
+                  margin="normal"
+                  size="small"
+                  onChange={this.keyPress}
+                />
                 <Button
-                  style={{ float: 'right' }}
-                  variant="fab"
-                  mini
+                  variant="raised"
                   color="secondary"
-                  aria-label="add"
-                  aria-owns={this.state.menuParent ? 'simple-menu' : null}
-                  aria-haspopup="true"
-                  onClick={this.handleMenuClick}>
-                  <CreateNewFolder />
+                  mini
+                  onClick={this.handleNewModuleClick}>
+                  <KeyBoardArrowRight />
                 </Button>
-              </Tooltip>
-              <Menu
-                id="simple-menu"
-                style={{ left: '-350px' }}
-                open={Boolean(this.state.menuParent)}
-                onClose={this.handleMenuClose}
-                anchorEl={this.state.menuParent}>
-                <MenuItem>
-                  <TextField
-                    id="name"
-                    label="Module name"
-                    margin="normal"
-                    size="small"
-                    onChange={this.keyPress}
-                  />
-                  <Button
-                    variant="raised"
-                    color="secondary"
-                    mini
-                    onClick={this.handleNewModuleClick}>
-                    <KeyBoardArrowRight />
-                  </Button>
-                </MenuItem>
-              </Menu>
-            </Grid>
+              </MenuItem>
+            </Menu>
           </Grid>
           {this.state.modules.map((el, index) => {
             return (
               <Expansion
-                expanded={el.expanded}
                 key={index}
                 title={el.name}
                 items={el.items}
+                moduleId={el.moduleId}
               />
             );
           })}

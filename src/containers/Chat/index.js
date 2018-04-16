@@ -93,7 +93,8 @@ class Chat extends React.Component {
               },
               chatbubble: {
                 borderRadius: 70,
-                padding: 40
+                padding: 40,
+                backgroundColor: '#F70044'
               }
             }}
           />
