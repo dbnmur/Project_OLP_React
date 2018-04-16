@@ -15,7 +15,6 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import MoreVert from 'material-ui-icons/MoreVert';
 import IconButton from 'material-ui/IconButton';
 import ModeEdit from 'material-ui-icons/ModeEdit';
 import Delete from 'material-ui-icons/Delete';
@@ -33,6 +32,7 @@ class Expansion extends React.Component {
     };
 
     this.onClickPost = this.onClickPost.bind(this);
+    this.onClickDelete = this.onClickDelete.bind(this);
   }
 
   componentDidMount() {
@@ -48,6 +48,17 @@ class Expansion extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
   };
+
+  onClickDelete(recordId) {
+    axios
+      .delete(`/api/records/${recordId}`)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
   onClickPost() {
     const axiosConfig = {
@@ -102,7 +113,10 @@ class Expansion extends React.Component {
                             style={{ marginLeft: '5px' }}
                           />
                         </IconButton>
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            this.onClickDelete(item.recordId);
+                          }}>
                           <Delete color="secondary" />
                         </IconButton>
                       </div>
