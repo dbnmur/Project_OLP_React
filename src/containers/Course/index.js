@@ -26,6 +26,21 @@ class Course extends React.Component {
     this.handleNewModuleClick = this.handleNewModuleClick.bind(this);
     this.keyPress = this.keyPress.bind(this);
     this.extractModulesFromCourse = this.extractModulesFromCourse.bind(this);
+    this.updateModulesAfterDelete = this.updateModulesAfterDelete.bind(this);
+  }
+
+  componentDidMount() {
+    const { match: { params } } = this.props;
+
+    axios.get(`/api/courses/${params.courseid}`).then(res => {
+      this.extractModulesFromCourse(res.data.modules);
+      this.setState({ course: res.data });
+    });
+  }
+
+  updateModulesAfterDelete(moduleId) {
+    let items = this.state.modules.filter(item => item.moduleId !== moduleId);
+    this.setState({ modules: items });
   }
 
   keyPress(e) {
@@ -71,15 +86,6 @@ class Course extends React.Component {
       this.setState(prevState => ({
         modules: [...prevState.modules, el]
       }));
-    });
-  }
-
-  componentDidMount() {
-    const { match: { params } } = this.props;
-
-    axios.get(`/api/courses/${params.courseid}`).then(res => {
-      this.extractModulesFromCourse(res.data.modules);
-      this.setState({ course: res.data });
     });
   }
 
@@ -142,6 +148,7 @@ class Course extends React.Component {
                 title={el.name}
                 items={el.items}
                 moduleId={el.moduleId}
+                onModuleDelete={this.updateModulesAfterDelete}
               />
             );
           })}

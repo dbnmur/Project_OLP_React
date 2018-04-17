@@ -51,11 +51,11 @@ class ButtonAppBar extends React.Component {
             </Typography>
             {this.props.isTeacher ? (
               <Button onClick={this.changeUser} color="inherit">
-                View as student
+                View as a student
               </Button>
             ) : (
               <Button onClick={this.changeUser} color="inherit">
-                View as Teacher
+                View as a Teacher
               </Button>
             )}
           </Toolbar>

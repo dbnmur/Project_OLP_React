@@ -18,8 +18,12 @@ import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import ModeEdit from 'material-ui-icons/ModeEdit';
 import Delete from 'material-ui-icons/Delete';
+import MoreVert from 'material-ui-icons/MoreVert';
+import Menu, { MenuItem } from 'material-ui/Menu';
 import axios from 'axios';
 import { connect } from 'react-redux';
+
+import ModuleDeleteDialog from '../ModuleDeleteDialog';
 
 class Expansion extends React.Component {
   constructor(props) {
@@ -28,11 +32,17 @@ class Expansion extends React.Component {
       items: [],
       open: false,
       name: '',
-      description: ''
+      description: '',
+      buttonDisabled: false,
+      menu: null,
+      moduleDelete: false
     };
 
     this.onClickPost = this.onClickPost.bind(this);
     this.onClickDelete = this.onClickDelete.bind(this);
+    this.handleMenuClick = this.handleMenuClick.bind(this);
+    this.handleModuleDeleteClose = this.handleModuleDeleteClose.bind(this);
+    this.onModuleDeleteConfirm = this.onModuleDeleteConfirm.bind(this);
   }
 
   componentDidMount() {
@@ -41,14 +51,35 @@ class Expansion extends React.Component {
     });
   }
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
+  // Module actions menu
+  handleMenuClick = event => {
+    event.stopPropagation();
+    this.setState({ menu: event.currentTarget });
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
+  handleMenuClose = event => {
+    event.stopPropagation();
+    this.setState({ menu: null });
   };
 
+  // Delete a module by a given id
+  handleModuleDeleteClose() {
+    this.setState({ moduleDelete: false });
+  }
+
+  onModuleDeleteConfirm() {
+    axios
+      .delete(`/api/modules/${this.props.moduleId}`)
+      .then(res => {
+        this.handleModuleDeleteClose();
+        this.props.onModuleDelete(this.props.moduleId);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  // Delete a record by given id
   onClickDelete(recordId) {
     axios
       .delete(`/api/records/${recordId}`)
@@ -60,7 +91,17 @@ class Expansion extends React.Component {
       });
   }
 
+  // Create new record
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false, buttonDisabled: false });
+  };
+
   onClickPost() {
+    this.setState({ buttonDisabled: true });
     const axiosConfig = {
       headers: {
         'content-type': 'application/json-patch+json'
@@ -88,12 +129,52 @@ class Expansion extends React.Component {
   }
 
   render() {
+    const { menu } = this.state;
     return (
       <div>
         <ExpansionPanel key={this.props.index}>
           <ExpansionPanelSummary>
-            <div>
-              <Typography>{this.props.title}</Typography>
+            <div style={{ width: '100%', padding: '0' }}>
+              <Typography>
+                {this.props.title}
+                {this.props.isTeacher && (
+                  <IconButton
+                    style={{ float: 'right' }}
+                    aria-owns={menu ? 'simple-menu' : null}
+                    aria-haspopup="true"
+                    onClick={this.handleMenuClick}>
+                    <MoreVert />
+                  </IconButton>
+                )}
+              </Typography>
+              <Menu
+                id="simple-menu"
+                anchorEl={menu}
+                open={Boolean(menu)}
+                onClose={this.handleMenuClose}>
+                <MenuItem onClick={this.handleMenuClose}>
+                  <Button
+                    onClick={() => {
+                      this.setState({ moduleDelete: true });
+                    }}>
+                    <ModeEdit color="primary" />
+                    <Typography style={{ padding: '10px' }}>
+                      Edit module
+                    </Typography>
+                  </Button>
+                </MenuItem>
+                <MenuItem onClick={this.handleMenuClose}>
+                  <Button
+                    onClick={() => {
+                      this.setState({ moduleDelete: true });
+                    }}>
+                    <Delete color="secondary" />
+                    <Typography style={{ padding: '10px' }}>
+                      Delete module
+                    </Typography>
+                  </Button>
+                </MenuItem>
+              </Menu>
             </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
@@ -175,11 +256,20 @@ class Expansion extends React.Component {
             <Button onClick={this.handleClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.onClickPost} color="primary">
+            <Button
+              disabled={this.state.buttonDisabled}
+              onClick={this.onClickPost}
+              color="primary">
               Add record
             </Button>
           </DialogActions>
         </Dialog>
+        <ModuleDeleteDialog
+          moduleDelete={this.state.moduleDelete}
+          onClose={this.handleModuleDeleteClose}
+          onConfirm={this.onModuleDeleteConfirm}
+          moduleName={this.props.title}
+        />
       </div>
     );
   }
