@@ -25,7 +25,9 @@ class RecordModule extends React.Component {
         onClose={this.props.onClose}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
-          Add a new record to {this.props.title}
+          {this.props.action === 'create'
+            ? `Add a new record to ${this.props.title}`
+            : `Update ${this.props.record.name} record`}
         </DialogTitle>
         <DialogContent style={{ width: '500px' }}>
           <DialogContentText>
