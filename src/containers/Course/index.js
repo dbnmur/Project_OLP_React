@@ -144,10 +144,8 @@ class Course extends React.Component {
           {this.state.modules.map((el, index) => {
             return (
               <Expansion
-                key={index}
-                title={el.name}
-                items={el.items}
-                moduleId={el.moduleId}
+                {...el}
+                key={el.moduleId}
                 onModuleDelete={this.updateModulesAfterDelete}
               />
             );

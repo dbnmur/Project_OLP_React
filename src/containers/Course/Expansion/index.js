@@ -4,17 +4,10 @@ import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails
 } from 'material-ui/ExpansionPanel';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import List, { ListItem, ListItemIcon } from 'material-ui/List';
 import InboxIcon from 'material-ui-icons/Assignment';
 import Add from 'material-ui-icons/Add';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import ModeEdit from 'material-ui-icons/ModeEdit';
 import Delete from 'material-ui-icons/Delete';
@@ -24,18 +17,19 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 
 import ModuleDeleteDialog from '../ModuleDeleteDialog';
+import RecordModule from '../RecordModule';
 
 class Expansion extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       items: [],
-      open: false,
-      name: '',
-      description: '',
+      openRecordCreate: false,
+      openRecordUpdate: false,
       buttonDisabled: false,
       menu: null,
-      moduleDelete: false
+      moduleDelete: false,
+      selectedRecord: {}
     };
 
     this.onClickPost = this.onClickPost.bind(this);
@@ -43,6 +37,11 @@ class Expansion extends React.Component {
     this.handleMenuClick = this.handleMenuClick.bind(this);
     this.handleModuleDeleteClose = this.handleModuleDeleteClose.bind(this);
     this.onModuleDeleteConfirm = this.onModuleDeleteConfirm.bind(this);
+    this.filterRecordsAfterDeletion = this.filterRecordsAfterDeletion.bind(
+      this
+    );
+    this.onclickOpenRecordUpdate = this.onclickOpenRecordUpdate.bind(this);
+    this.onClickUpdate = this.onClickUpdate.bind(this);
   }
 
   componentDidMount() {
@@ -80,27 +79,37 @@ class Expansion extends React.Component {
   }
 
   // Delete a record by given id
-  onClickDelete(recordId) {
+  onClickDelete = (event, recordId) => {
+    event.stopPropagation();
     axios
       .delete(`/api/records/${recordId}`)
       .then(res => {
-        console.log(res);
+        this.filterRecordsAfterDeletion(recordId);
       })
       .catch(error => {
         console.log(error);
       });
+  };
+
+  filterRecordsAfterDeletion(recordId) {
+    let items = this.state.items.filter(item => item.recordId !== recordId);
+    this.setState({ items });
   }
 
   // Create new record
   handleClickOpen = () => {
-    this.setState({ open: true });
+    this.setState({ openRecordCreate: true });
   };
 
   handleClose = () => {
-    this.setState({ open: false, buttonDisabled: false });
+    this.setState({
+      openRecordCreate: false,
+      buttonDisabled: false,
+      openRecordUpdate: false
+    });
   };
 
-  onClickPost() {
+  onClickPost(name = '', description = '') {
     this.setState({ buttonDisabled: true });
     const axiosConfig = {
       headers: {
@@ -109,8 +118,8 @@ class Expansion extends React.Component {
     };
 
     const postData = {
-      description: this.state.description,
-      name: this.state.name,
+      description: description,
+      name: name,
       moduleId: this.props.moduleId
     };
 
@@ -128,25 +137,62 @@ class Expansion extends React.Component {
       });
   }
 
+  // Update a record
+  onclickOpenRecordUpdate(e, record) {
+    e.stopPropagation();
+    this.setState({ openRecordUpdate: true, selectedRecord: record });
+  }
+
+  onClickUpdate(name = '', description = '') {
+    this.setState({ buttonDisabled: true });
+    console.log(this.state.selectedRecord.recordId);
+    const axiosConfig = {
+      headers: {
+        'content-type': 'application/json-patch+json'
+      }
+    };
+
+    const postData = {
+      ...this.state.selectedRecord,
+      description: description,
+      name: name
+    };
+
+    axios
+      .put(
+        `/api/records/${this.state.selectedRecord.recordId}`,
+        postData,
+        axiosConfig
+      )
+      .then(res => {
+        this.setState(prevState => ({
+          items: [...prevState.items, res.data]
+        }));
+        this.handleClose();
+      })
+      .catch(error => {
+        console.log(error);
+        this.handleClose();
+      });
+  }
+
   render() {
     const { menu } = this.state;
     return (
-      <div>
-        <ExpansionPanel key={this.props.index}>
+      <div style={{ paddingBottom: '10px' }}>
+        <ExpansionPanel>
           <ExpansionPanelSummary>
             <div style={{ width: '100%', padding: '0' }}>
-              <Typography>
-                {this.props.title}
-                {this.props.isTeacher && (
-                  <IconButton
-                    style={{ float: 'right' }}
-                    aria-owns={menu ? 'simple-menu' : null}
-                    aria-haspopup="true"
-                    onClick={this.handleMenuClick}>
-                    <MoreVert />
-                  </IconButton>
-                )}
-              </Typography>
+              <Typography>{this.props.name}</Typography>
+              {this.props.isTeacher && (
+                <IconButton
+                  style={{ float: 'right' }}
+                  aria-owns={menu ? 'simple-menu' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleMenuClick}>
+                  <MoreVert />
+                </IconButton>
+              )}
               <Menu
                 id="simple-menu"
                 anchorEl={menu}
@@ -182,26 +228,38 @@ class Expansion extends React.Component {
               {this.state.items.map((item, index) => {
                 return (
                   <ListItem key={index}>
-                    <ListItemIcon>
-                      <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={item.name} />
-                    {this.props.isTeacher && (
-                      <div>
-                        <IconButton>
-                          <ModeEdit
-                            color="primary"
-                            style={{ marginLeft: '5px' }}
-                          />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => {
-                            this.onClickDelete(item.recordId);
-                          }}>
-                          <Delete color="secondary" />
-                        </IconButton>
-                      </div>
-                    )}
+                    <ExpansionPanel style={{ width: '100%' }}>
+                      <ExpansionPanelSummary>
+                        <ListItemIcon style={{ alignSelf: 'center' }}>
+                          <InboxIcon />
+                        </ListItemIcon>
+                        <Typography style={{ alignSelf: 'center' }}>
+                          {item.name}
+                        </Typography>
+                        {this.props.isTeacher && (
+                          <div style={{ width: '100%', textAlign: 'right' }}>
+                            <IconButton
+                              onClick={e => {
+                                this.onclickOpenRecordUpdate(e, item);
+                              }}>
+                              <ModeEdit
+                                color="primary"
+                                style={{ marginLeft: '5px' }}
+                              />
+                            </IconButton>
+                            <IconButton
+                              onClick={e => {
+                                this.onClickDelete(e, item.recordId);
+                              }}>
+                              <Delete color="secondary" />
+                            </IconButton>
+                          </div>
+                        )}
+                      </ExpansionPanelSummary>
+                      <ExpansionPanelDetails>
+                        <Typography>{item.description}</Typography>
+                      </ExpansionPanelDetails>
+                    </ExpansionPanel>
                   </ListItem>
                 );
               })}
@@ -215,55 +273,25 @@ class Expansion extends React.Component {
             </List>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <Dialog
-          open={this.state.open}
+        <RecordModule
+          buttonDisabled={this.state.buttonDisabled}
+          open={this.state.openRecordCreate}
+          title={this.props.title}
           onClose={this.handleClose}
-          aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">
-            Add a new record to {this.props.title}
-          </DialogTitle>
-          <DialogContent style={{ width: '500px' }}>
-            <DialogContentText>
-              To add a new record, fill the form below.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="title"
-              label="Record title"
-              type="text"
-              onChange={e => {
-                e.preventDefault();
-                this.setState({ name: e.target.value });
-              }}
-              fullWidth
-            />
-            <TextField
-              margin="dense"
-              id="title"
-              multiline
-              rows={5}
-              label="Record description"
-              type="text"
-              onChange={e => {
-                e.preventDefault();
-                this.setState({ description: e.target.value });
-              }}
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button
-              disabled={this.state.buttonDisabled}
-              onClick={this.onClickPost}
-              color="primary">
-              Add record
-            </Button>
-          </DialogActions>
-        </Dialog>
+          onClick={this.onClickPost}
+          record={this.state.selectedRecord}
+          action="create">
+          Add a new record
+        </RecordModule>
+        <RecordModule
+          buttonDisabled={this.state.buttonDisabled}
+          open={this.state.openRecordUpdate}
+          onClose={this.handleClose}
+          record={this.state.selectedRecord}
+          onClick={this.onClickUpdate}
+          action="update">
+          Update record
+        </RecordModule>
         <ModuleDeleteDialog
           moduleDelete={this.state.moduleDelete}
           onClose={this.handleModuleDeleteClose}
