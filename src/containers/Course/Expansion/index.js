@@ -16,6 +16,7 @@ import MoreVert from 'material-ui-icons/MoreVert';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import ModuleDeleteDialog from '../ModuleDeleteDialog';
 import ModuleEditDialog from '../ModuleEditDialog';
@@ -32,7 +33,9 @@ class Expansion extends React.Component {
       menu: null,
       moduleDelete: false,
       moduleEdit: false,
-      selectedRecord: {}
+      selectedRecord: {},
+      selectedExercise: null,
+      panelExpanded: false
     };
 
     this.onClickPost = this.onClickPost.bind(this);
@@ -50,7 +53,9 @@ class Expansion extends React.Component {
 
   componentDidMount() {
     axios.get(`/api/modules/${this.props.module.moduleId}`).then(res => {
-      this.setState({ items: res.data.records });
+      this.setState({
+        items: res.data.records
+      });
     });
   }
 
@@ -222,7 +227,6 @@ class Expansion extends React.Component {
         axiosConfig
       )
       .then(res => {
-        // let item = { ...this.state.selectedRecord, name, description };
         let tempState = this.state.items;
         tempState.forEach(el => {
           if (el.recordId === this.state.selectedRecord.recordId) {
@@ -307,7 +311,17 @@ class Expansion extends React.Component {
                 return (
                   <ListItem key={item.recordId} style={{ padding: '5px' }}>
                     {/* Record panel */}
-                    <ExpansionPanel style={{ width: '100%' }}>
+                    <ExpansionPanel
+                      id={item.recordId}
+                      style={{ width: '100%' }}
+                      expanded={
+                        _.isEmpty(this.props.botResponse)
+                          ? false
+                          : item.recordId ===
+                            this.props.botResponse.exercise.exerciseId
+                            ? true
+                            : false
+                      }>
                       <ExpansionPanelSummary>
                         {item.answerRegex ? (
                           <ListItemIcon style={{ alignSelf: 'center' }}>
@@ -340,7 +354,7 @@ class Expansion extends React.Component {
                                 style={{ marginLeft: '5px' }}
                               />
                             </IconButton>
-                            {/* Delete button */}
+                            {/* Delete record */}
                             <IconButton
                               onClick={e => {
                                 this.onClickDelete(e, item.recordId);
@@ -409,7 +423,8 @@ class Expansion extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    isTeacher: state.newCourse.isTeacher
+    isTeacher: state.newCourse.isTeacher,
+    botResponse: state.newCourse.botResponse
   };
 };
 

@@ -54,6 +54,6 @@ button:disabled {
   background-color: red !important;
 }
 
-.chat-messages > div > div > div {
-  background-color: black !important;
+.chat-messages > div:nth-child(2n-1) > div > div {
+  background-color: rgb(158, 157, 157) !important;
 }

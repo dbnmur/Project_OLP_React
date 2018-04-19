@@ -74,7 +74,7 @@ class RecordModule extends React.Component {
           />
           <TextField
             margin="dense"
-            id="title"
+            id="description"
             multiline
             rows={5}
             label="Record description"

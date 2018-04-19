@@ -1,5 +1,11 @@
 const newCourse = (
-  state = { chatBots: [], courses: [], open: false, isTeacher: true },
+  state = {
+    chatBots: [],
+    courses: [],
+    open: false,
+    isTeacher: true,
+    botResponse: {}
+  },
   action
 ) => {
   switch (action.type) {
@@ -51,6 +57,11 @@ const newCourse = (
       return {
         ...state,
         isTeacher: action.isTeacher
+      };
+    case 'CATCH_BOT_RESPONSE':
+      return {
+        ...state,
+        botResponse: action.botResponse
       };
     default:
       return state;

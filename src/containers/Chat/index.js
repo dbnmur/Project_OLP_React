@@ -3,6 +3,10 @@ import { ChatFeed } from 'react-chat-ui';
 import List from 'material-ui/List';
 import Input from 'material-ui/Input';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+
+import { catchBotResponse } from '../../modules/actions';
 
 class Chat extends React.Component {
   constructor() {
@@ -40,8 +44,12 @@ class Chat extends React.Component {
       };
 
       axios
-        .post('/api/bot', postData, axiosConfig)
+        .post(this.props.link, postData, axiosConfig)
         .then(res => {
+          console.log(res.data);
+          if (_.has(res.data, 'exerciseId')) {
+            this.props.onChatBotResponse(res.data);
+          }
           this.setState(prevState => ({
             messages: [
               ...prevState.messages,
@@ -126,4 +134,12 @@ class Chat extends React.Component {
   }
 }
 
-export default Chat;
+const mapDispatchToProps = dispatch => {
+  return {
+    onChatBotResponse: response => {
+      dispatch(catchBotResponse(response));
+    }
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Chat);

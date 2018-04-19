@@ -9,6 +9,7 @@ import KeyBoardArrowRight from 'material-ui-icons/KeyboardArrowRight';
 import { CircularProgress } from 'material-ui/Progress';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import Chat from '../Chat';
 import Expansion from './Expansion';
@@ -38,6 +39,7 @@ class Course extends React.Component {
     axios.get(`/api/courses/${params.courseid}`).then(res => {
       this.extractModulesFromCourse(res.data.modules);
       this.setState({ course: res.data, isLoading: false });
+      console.log(res.data);
     });
   }
 
@@ -173,7 +175,11 @@ class Course extends React.Component {
         )}
         <Grid item md={5} sm={12} style={{ height: '100%' }}>
           <h1>Chat</h1>
-          <Chat />
+          {_.isEmpty(this.state.course) ? (
+            <Chat />
+          ) : (
+            <Chat link={this.state.course.chatBot.link} />
+          )}
         </Grid>
       </Grid>
     );

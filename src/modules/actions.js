@@ -50,3 +50,12 @@ export const isTeacher = isTeacher => {
     isTeacher
   };
 };
+
+export const catchBotResponse = botResponse => {
+  return {
+    type: 'CATCH_BOT_RESPONSE',
+    botResponse: {
+      ...botResponse
+    }
+  };
+};
