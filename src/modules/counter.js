@@ -1,5 +1,5 @@
 const newCourse = (
-  state = { chatBots: [], courses: [], open: false, isTeacher: false },
+  state = { chatBots: [], courses: [], open: false, isTeacher: true },
   action
 ) => {
   switch (action.type) {

@@ -53,3 +53,7 @@ button:disabled {
 .textFieldOnError::before {
   background-color: red !important;
 }
+
+.chat-messages > div > div > div {
+  background-color: black !important;
+}
