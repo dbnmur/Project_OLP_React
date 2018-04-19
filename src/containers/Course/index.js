@@ -6,6 +6,7 @@ import Tooltip from 'material-ui/Tooltip';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import TextField from 'material-ui/TextField';
 import KeyBoardArrowRight from 'material-ui-icons/KeyboardArrowRight';
+import { CircularProgress } from 'material-ui/Progress';
 import axios from 'axios';
 import { connect } from 'react-redux';
 
@@ -18,7 +19,8 @@ class Course extends React.Component {
     this.state = {
       modules: [],
       course: {},
-      newModuleName: ''
+      newModuleName: '',
+      isLoading: true
     };
 
     this.handleMenuClick = this.handleMenuClick.bind(this);
@@ -27,6 +29,7 @@ class Course extends React.Component {
     this.keyPress = this.keyPress.bind(this);
     this.extractModulesFromCourse = this.extractModulesFromCourse.bind(this);
     this.updateModulesAfterDelete = this.updateModulesAfterDelete.bind(this);
+    this.updateModuleAfterUpdate = this.updateModuleAfterUpdate.bind(this);
   }
 
   componentDidMount() {
@@ -34,13 +37,23 @@ class Course extends React.Component {
 
     axios.get(`/api/courses/${params.courseid}`).then(res => {
       this.extractModulesFromCourse(res.data.modules);
-      this.setState({ course: res.data });
+      this.setState({ course: res.data, isLoading: false });
     });
   }
 
   updateModulesAfterDelete(moduleId) {
     let items = this.state.modules.filter(item => item.moduleId !== moduleId);
     this.setState({ modules: items });
+  }
+
+  updateModuleAfterUpdate(module) {
+    let tempState = this.state.modules;
+    tempState.forEach(el => {
+      if (el.moduleId === module.moduleId) {
+        el.name = module.name;
+      }
+    });
+    this.setState({ modules: tempState });
   }
 
   keyPress(e) {
@@ -92,65 +105,72 @@ class Course extends React.Component {
   render() {
     return (
       <Grid container spacing={8} style={{ width: '100%' }} justify="center">
-        <Grid item md={5} sm={12} style={{ width: '100%' }}>
-          <Grid
-            container
-            spacing={8}
-            style={{ width: '100%' }}
-            justify="flex-start"
-            alignItems="center">
-            <h1>{this.state.course.name}</h1>
-            {this.props.isTeacher && (
-              <div>
-                <Tooltip title="Add new module">
-                  <Button
-                    style={{ float: 'left', marginLeft: '25px' }}
-                    variant="fab"
-                    mini
-                    color="secondary"
-                    aria-label="add"
-                    aria-owns={this.state.menuParent ? 'simple-menu' : null}
-                    aria-haspopup="true"
-                    onClick={this.handleMenuClick}>
-                    <CreateNewFolder />
-                  </Button>
-                </Tooltip>
-                <Menu
-                  id="simple-menu"
-                  style={{ left: '75px' }}
-                  open={Boolean(this.state.menuParent)}
-                  onClose={this.handleMenuClose}
-                  anchorEl={this.state.menuParent}>
-                  <MenuItem>
-                    <TextField
-                      id="name"
-                      label="New module name"
-                      margin="normal"
-                      size="small"
-                      onChange={this.keyPress}
-                    />
+        {!this.state.isLoading ? (
+          <Grid item md={5} sm={12} style={{ width: '100%' }}>
+            <Grid
+              container
+              spacing={8}
+              style={{ width: '100%' }}
+              justify="flex-start"
+              alignItems="center">
+              <h1>{this.state.course.name}</h1>
+              {this.props.isTeacher && (
+                <div>
+                  <Tooltip title="Add new module">
                     <Button
-                      variant="raised"
-                      color="secondary"
+                      style={{ float: 'left', marginLeft: '25px' }}
+                      variant="fab"
                       mini
-                      onClick={this.handleNewModuleClick}>
-                      <KeyBoardArrowRight />
+                      color="secondary"
+                      aria-label="add"
+                      aria-owns={this.state.menuParent ? 'simple-menu' : null}
+                      aria-haspopup="true"
+                      onClick={this.handleMenuClick}>
+                      <CreateNewFolder />
                     </Button>
-                  </MenuItem>
-                </Menu>
-              </div>
-            )}
+                  </Tooltip>
+                  <Menu
+                    id="simple-menu"
+                    style={{ left: '75px' }}
+                    open={Boolean(this.state.menuParent)}
+                    onClose={this.handleMenuClose}
+                    anchorEl={this.state.menuParent}>
+                    <MenuItem>
+                      <TextField
+                        id="name"
+                        label="New module name"
+                        margin="normal"
+                        size="small"
+                        onChange={this.keyPress}
+                      />
+                      <Button
+                        variant="raised"
+                        color="secondary"
+                        mini
+                        onClick={this.handleNewModuleClick}>
+                        <KeyBoardArrowRight />
+                      </Button>
+                    </MenuItem>
+                  </Menu>
+                </div>
+              )}
+            </Grid>
+            {this.state.modules.map((el, index) => {
+              return (
+                <Expansion
+                  module={{ ...el }}
+                  key={el.moduleId}
+                  onModuleDelete={this.updateModulesAfterDelete}
+                  onModuleUpdate={this.updateModuleAfterUpdate}
+                />
+              );
+            })}
           </Grid>
-          {this.state.modules.map((el, index) => {
-            return (
-              <Expansion
-                {...el}
-                key={el.moduleId}
-                onModuleDelete={this.updateModulesAfterDelete}
-              />
-            );
-          })}
-        </Grid>
+        ) : (
+          <Grid item md={5}>
+            <CircularProgress />
+          </Grid>
+        )}
         <Grid item md={5} sm={12} style={{ height: '100%' }}>
           <h1>Chat</h1>
           <Chat />

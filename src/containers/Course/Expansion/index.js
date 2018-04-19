@@ -5,7 +5,8 @@ import ExpansionPanel, {
   ExpansionPanelDetails
 } from 'material-ui/ExpansionPanel';
 import List, { ListItem, ListItemIcon } from 'material-ui/List';
-import InboxIcon from 'material-ui-icons/Assignment';
+import InboxIcon from 'material-ui-icons/Laptop';
+import Description from 'material-ui-icons/Description';
 import Add from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
@@ -17,6 +18,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 
 import ModuleDeleteDialog from '../ModuleDeleteDialog';
+import ModuleEditDialog from '../ModuleEditDialog';
 import RecordModule from '../RecordModule';
 
 class Expansion extends React.Component {
@@ -29,6 +31,7 @@ class Expansion extends React.Component {
       buttonDisabled: false,
       menu: null,
       moduleDelete: false,
+      moduleEdit: false,
       selectedRecord: {}
     };
 
@@ -42,10 +45,11 @@ class Expansion extends React.Component {
     );
     this.onclickOpenRecordUpdate = this.onclickOpenRecordUpdate.bind(this);
     this.onClickUpdate = this.onClickUpdate.bind(this);
+    this.onModuleUpdateConfirm = this.onModuleUpdateConfirm.bind(this);
   }
 
   componentDidMount() {
-    axios.get(`/api/modules/${this.props.moduleId}`).then(res => {
+    axios.get(`/api/modules/${this.props.module.moduleId}`).then(res => {
       this.setState({ items: res.data.records });
     });
   }
@@ -68,13 +72,39 @@ class Expansion extends React.Component {
 
   onModuleDeleteConfirm() {
     axios
-      .delete(`/api/modules/${this.props.moduleId}`)
+      .delete(`/api/modules/${this.props.module.moduleId}`)
       .then(res => {
         this.handleModuleDeleteClose();
-        this.props.onModuleDelete(this.props.moduleId);
+        this.props.onModuleDelete(this.props.module.moduleId);
       })
       .catch(error => {
         console.log(error);
+      });
+  }
+
+  // Update module by a given id
+  onModuleUpdateConfirm(name) {
+    const axiosConfig = {
+      headers: {
+        'content-type': 'application/json-patch+json'
+      }
+    };
+
+    const postData = {
+      ...this.props.module,
+      name
+    };
+
+    axios
+      .put(`/api/modules/${this.props.module.moduleId}`, postData, axiosConfig)
+      .then(res => {
+        console.log(res.data);
+        this.props.onModuleUpdate(postData);
+        this.handleClose();
+      })
+      .catch(error => {
+        console.log(error);
+        this.handleClose();
       });
   }
 
@@ -105,26 +135,40 @@ class Expansion extends React.Component {
     this.setState({
       openRecordCreate: false,
       buttonDisabled: false,
-      openRecordUpdate: false
+      openRecordUpdate: false,
+      selectedRecord: {},
+      moduleEdit: false
     });
   };
 
-  onClickPost(name = '', description = '') {
+  onClickPost(record) {
     this.setState({ buttonDisabled: true });
     const axiosConfig = {
       headers: {
         'content-type': 'application/json-patch+json'
       }
     };
+    let postData = {};
 
-    const postData = {
-      description: description,
-      name: name,
-      moduleId: this.props.moduleId
-    };
-
+    record.type === 'record'
+      ? (postData = {
+          description: record.description,
+          name: record.name,
+          moduleId: this.props.module.moduleId
+        })
+      : (postData = {
+          description: record.description,
+          name: record.name,
+          moduleId: this.props.module.moduleId,
+          answerRegex: record.answerRegex,
+          isCompleted: false
+        });
     axios
-      .post('/api/records', postData, axiosConfig)
+      .post(
+        record.type === 'record' ? '/api/records' : '/api/exercises',
+        postData,
+        axiosConfig
+      )
       .then(res => {
         this.setState(prevState => ({
           items: [...prevState.items, res.data]
@@ -143,31 +187,51 @@ class Expansion extends React.Component {
     this.setState({ openRecordUpdate: true, selectedRecord: record });
   }
 
-  onClickUpdate(name = '', description = '') {
+  onClickUpdate(record) {
     this.setState({ buttonDisabled: true });
-    console.log(this.state.selectedRecord.recordId);
     const axiosConfig = {
       headers: {
         'content-type': 'application/json-patch+json'
       }
     };
 
-    const postData = {
-      ...this.state.selectedRecord,
-      description: description,
-      name: name
-    };
+    let postData = {};
+
+    record.type === 'record'
+      ? (postData = {
+          ...this.state.selectedRecord,
+          description: record.description,
+          name: record.name,
+          moduleId: this.props.module.moduleId
+        })
+      : (postData = {
+          ...this.state.selectedRecord,
+          description: record.description,
+          name: record.name,
+          moduleId: this.props.module.moduleId,
+          answerRegex: record.answerRegex,
+          isCompleted: false
+        });
 
     axios
       .put(
-        `/api/records/${this.state.selectedRecord.recordId}`,
+        record.type === 'record'
+          ? `/api/records/${this.state.selectedRecord.recordId}`
+          : `/api/exercises/${this.state.selectedRecord.recordId}`,
         postData,
         axiosConfig
       )
       .then(res => {
-        this.setState(prevState => ({
-          items: [...prevState.items, res.data]
-        }));
+        // let item = { ...this.state.selectedRecord, name, description };
+        let tempState = this.state.items;
+        tempState.forEach(el => {
+          if (el.recordId === this.state.selectedRecord.recordId) {
+            el.name = record.name;
+            el.description = record.description;
+          }
+        });
+        this.setState({ items: tempState });
+
         this.handleClose();
       })
       .catch(error => {
@@ -180,11 +244,21 @@ class Expansion extends React.Component {
     const { menu } = this.state;
     return (
       <div style={{ paddingBottom: '10px' }}>
-        <ExpansionPanel>
+        {/* Module panel */}
+        <ExpansionPanel style={{ width: '100%' }}>
           <ExpansionPanelSummary>
-            <div style={{ width: '100%', padding: '0' }}>
-              <Typography>{this.props.name}</Typography>
-              {this.props.isTeacher && (
+            <Typography
+              style={{ width: '100%', alignSelf: 'center', fontSize: '1.5em' }}>
+              {this.props.module.name}
+            </Typography>
+            {/* Open module action menu */}
+            {this.props.isTeacher && (
+              <div
+                style={{
+                  width: '100%',
+                  textAlign: 'right',
+                  padding: '0'
+                }}>
                 <IconButton
                   style={{ float: 'right' }}
                   aria-owns={menu ? 'simple-menu' : null}
@@ -192,52 +266,71 @@ class Expansion extends React.Component {
                   onClick={this.handleMenuClick}>
                   <MoreVert />
                 </IconButton>
-              )}
-              <Menu
-                id="simple-menu"
-                anchorEl={menu}
-                open={Boolean(menu)}
-                onClose={this.handleMenuClose}>
-                <MenuItem onClick={this.handleMenuClose}>
-                  <Button
-                    onClick={() => {
-                      this.setState({ moduleDelete: true });
-                    }}>
-                    <ModeEdit color="primary" />
-                    <Typography style={{ padding: '10px' }}>
-                      Edit module
-                    </Typography>
-                  </Button>
-                </MenuItem>
-                <MenuItem onClick={this.handleMenuClose}>
-                  <Button
-                    onClick={() => {
-                      this.setState({ moduleDelete: true });
-                    }}>
-                    <Delete color="secondary" />
-                    <Typography style={{ padding: '10px' }}>
-                      Delete module
-                    </Typography>
-                  </Button>
-                </MenuItem>
-              </Menu>
-            </div>
+              </div>
+            )}
+            {/* Module action menu */}
+            <Menu
+              id="simple-menu"
+              anchorEl={menu}
+              open={Boolean(menu)}
+              onClose={this.handleMenuClose}>
+              {/* Module edit */}
+              <MenuItem onClick={this.handleMenuClose}>
+                <Button
+                  onClick={() => {
+                    this.setState({ moduleEdit: true });
+                  }}>
+                  <ModeEdit color="primary" />
+                  <Typography style={{ padding: '10px' }}>
+                    Edit module
+                  </Typography>
+                </Button>
+              </MenuItem>
+              {/* Module delete */}
+              <MenuItem onClick={this.handleMenuClose}>
+                <Button
+                  onClick={() => {
+                    this.setState({ moduleDelete: true });
+                  }}>
+                  <Delete color="secondary" />
+                  <Typography style={{ padding: '10px' }}>
+                    Delete module
+                  </Typography>
+                </Button>
+              </MenuItem>
+            </Menu>
           </ExpansionPanelSummary>
+          {/* Records */}
           <ExpansionPanelDetails>
             <List style={{ width: '100%' }}>
               {this.state.items.map((item, index) => {
                 return (
-                  <ListItem key={index}>
+                  <ListItem key={item.recordId} style={{ padding: '5px' }}>
+                    {/* Record panel */}
                     <ExpansionPanel style={{ width: '100%' }}>
                       <ExpansionPanelSummary>
-                        <ListItemIcon style={{ alignSelf: 'center' }}>
-                          <InboxIcon />
-                        </ListItemIcon>
-                        <Typography style={{ alignSelf: 'center' }}>
+                        {item.answerRegex ? (
+                          <ListItemIcon style={{ alignSelf: 'center' }}>
+                            <InboxIcon />
+                          </ListItemIcon>
+                        ) : (
+                          <ListItemIcon style={{ alignSelf: 'center' }}>
+                            <Description />
+                          </ListItemIcon>
+                        )}
+                        <Typography
+                          style={{ alignSelf: 'center', width: '100%' }}>
                           {item.name}
                         </Typography>
+                        {/* Record action buttons */}
                         {this.props.isTeacher && (
-                          <div style={{ width: '100%', textAlign: 'right' }}>
+                          <div
+                            style={{
+                              width: '100%',
+                              textAlign: 'right',
+                              padding: '0'
+                            }}>
+                            {/* Update record */}
                             <IconButton
                               onClick={e => {
                                 this.onclickOpenRecordUpdate(e, item);
@@ -247,6 +340,7 @@ class Expansion extends React.Component {
                                 style={{ marginLeft: '5px' }}
                               />
                             </IconButton>
+                            {/* Delete button */}
                             <IconButton
                               onClick={e => {
                                 this.onClickDelete(e, item.recordId);
@@ -263,6 +357,7 @@ class Expansion extends React.Component {
                   </ListItem>
                 );
               })}
+              {/* Add new record */}
               {this.props.isTeacher && (
                 <ListItem button dense onClick={this.handleClickOpen}>
                   <ListItemIcon>
@@ -273,16 +368,18 @@ class Expansion extends React.Component {
             </List>
           </ExpansionPanelDetails>
         </ExpansionPanel>
+        {/* Record creation module */}
         <RecordModule
           buttonDisabled={this.state.buttonDisabled}
           open={this.state.openRecordCreate}
-          title={this.props.title}
+          title={this.props.module.name}
           onClose={this.handleClose}
           onClick={this.onClickPost}
           record={this.state.selectedRecord}
           action="create">
           Add a new record
         </RecordModule>
+        {/* Record update module */}
         <RecordModule
           buttonDisabled={this.state.buttonDisabled}
           open={this.state.openRecordUpdate}
@@ -292,11 +389,18 @@ class Expansion extends React.Component {
           action="update">
           Update record
         </RecordModule>
+        {/* Module delete dialog */}
         <ModuleDeleteDialog
           moduleDelete={this.state.moduleDelete}
           onClose={this.handleModuleDeleteClose}
           onConfirm={this.onModuleDeleteConfirm}
-          moduleName={this.props.title}
+          moduleName={this.props.module.name}
+        />
+        <ModuleEditDialog
+          open={this.state.moduleEdit}
+          onClose={this.handleClose}
+          onConfirm={this.onModuleUpdateConfirm}
+          moduleName={this.props.module.name}
         />
       </div>
     );
