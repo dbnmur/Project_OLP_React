@@ -49,8 +49,6 @@ class CourseNewDialog extends React.Component {
     }
   }
 
-  componentWillUnmount() {}
-
   handleClickOpen() {
     this.props.onClose(true);
   }

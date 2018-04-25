@@ -9,7 +9,7 @@ import About from './About';
 import Login from './Login/Form/Form';
 import NavBar from './NavBar/NavBar';
 import AdminPanel from './Admin/Panel';
-import Dashboard from './Dashboard/Dashboard';
+import DashboardContainer from './Dashboard/DashboardContainer';
 import Course from './Course/Course';
 
 class App extends React.Component {
@@ -73,7 +73,7 @@ class App extends React.Component {
           <Route exact path="/" component={Home} />
           <Route exact path="/about" component={About} />
           <Route exact path="/admin" component={AdminPanel} />
-          <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/dashboard" component={DashboardContainer} />
           <Route exact path="/courses/:courseid" component={Course} />
           <Switch>
             <Route exact path="/login" render={() => this.renderHome()} />

@@ -11,29 +11,26 @@ const styles = theme => ({
   }
 });
 
-class FloatButton extends React.Component {
-  render() {
-    const { classes } = this.props;
-    return (
-      <div>
-        <Button
-          variant="fab"
-          color="primary"
-          aria-label="add"
-          onClick={this.props.onClick}
-          className={classes.button}>
-          <Tooltip
-            id="tooltip-top"
-            title="Add new"
-            placement="top"
-            style={{ marginBottom: '10px' }}>
-            <AddIcon />
-          </Tooltip>
-        </Button>
-      </div>
-    );
-  }
-}
+const FloatButton = ({ classes, onClick }) => {
+  return (
+    <div>
+      <Button
+        variant="fab"
+        color="primary"
+        aria-label="add"
+        onClick={onClick}
+        className={classes.button}>
+        <Tooltip
+          id="tooltip-top"
+          title="Add new"
+          placement="top"
+          style={{ marginBottom: '10px' }}>
+          <AddIcon />
+        </Tooltip>
+      </Button>
+    </div>
+  );
+};
 
 FloatButton.propTypes = {
   classes: PropTypes.object.isRequired

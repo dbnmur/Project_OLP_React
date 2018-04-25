@@ -15,7 +15,7 @@ const styles = {
   }
 };
 
-const CourseBox = ({ classes, title, description, id }) => {
+const Course = ({ classes, title, description, id }) => {
   return (
     <div>
       <Card raised className={classes.card}>
@@ -41,8 +41,8 @@ const CourseBox = ({ classes, title, description, id }) => {
   );
 };
 
-CourseBox.propTypes = {
+Course.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(CourseBox);
+export default withStyles(styles)(Course);
