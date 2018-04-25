@@ -15,6 +15,7 @@ import Delete from 'material-ui-icons/Delete';
 import MoreVert from 'material-ui-icons/MoreVert';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import axios from 'axios';
+import Done from 'material-ui-icons/Done';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -34,7 +35,7 @@ class Expansion extends React.Component {
       moduleDelete: false,
       moduleEdit: false,
       selectedRecord: {},
-      selectedExercise: null,
+      selectedExercise: {},
       panelExpanded: false
     };
 
@@ -312,7 +313,6 @@ class Expansion extends React.Component {
                   <ListItem key={item.recordId} style={{ padding: '5px' }}>
                     {/* Record panel */}
                     <ExpansionPanel
-                      id={item.recordId}
                       style={{ width: '100%' }}
                       expanded={
                         _.isEmpty(this.props.botResponse)
@@ -325,7 +325,18 @@ class Expansion extends React.Component {
                       <ExpansionPanelSummary>
                         {item.answerRegex ? (
                           <ListItemIcon style={{ alignSelf: 'center' }}>
-                            <InboxIcon />
+                            {_.isEmpty(this.props.botResponse) ? (
+                              <InboxIcon />
+                            ) : item.recordId ===
+                            this.props.botResponse.exercise.exerciseId ? (
+                              this.props.botResponse.exercise.markDone ? (
+                                <Done />
+                              ) : (
+                                <InboxIcon />
+                              )
+                            ) : (
+                              <InboxIcon />
+                            )}
                           </ListItemIcon>
                         ) : (
                           <ListItemIcon style={{ alignSelf: 'center' }}>

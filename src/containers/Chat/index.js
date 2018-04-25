@@ -46,15 +46,17 @@ class Chat extends React.Component {
       axios
         .post(this.props.link, postData, axiosConfig)
         .then(res => {
-          console.log(res.data);
-          if (_.has(res.data, 'exerciseId')) {
-            this.props.onChatBotResponse(res.data);
-          }
+          this.props.onChatBotResponse(res.data);
           this.setState(prevState => ({
             messages: [
               ...prevState.messages,
               newMessage,
-              { id: 1, message: res.data.chatbotResponse }
+              {
+                id: 1,
+                message: `${res.data.chatbotResponse} - it has an id of ${
+                  res.data.exercise.exerciseId
+                }`
+              }
             ],
             session: res.data.sessionId
           }));

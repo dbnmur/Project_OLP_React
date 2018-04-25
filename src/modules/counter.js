@@ -3,8 +3,9 @@ const newCourse = (
     chatBots: [],
     courses: [],
     open: false,
-    isTeacher: true,
-    botResponse: {}
+    isTeacher: false,
+    botResponse: {},
+    exercises: []
   },
   action
 ) => {
@@ -62,6 +63,16 @@ const newCourse = (
       return {
         ...state,
         botResponse: action.botResponse
+      };
+    case 'ADD_EXERCISE':
+      return {
+        ...state,
+        exercises: [
+          ...state.exercises,
+          {
+            ...action.exercise
+          }
+        ]
       };
     default:
       return state;
