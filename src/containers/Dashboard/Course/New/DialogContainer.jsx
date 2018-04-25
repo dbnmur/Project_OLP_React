@@ -69,6 +69,7 @@ const mapStateToProps = state => {
   };
 };
 
+// TODO: you probably don't need this
 const mapDispatchToProps = dispatch => {
   return {
     onClose: isOpen => {

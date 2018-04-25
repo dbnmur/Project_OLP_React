@@ -11,7 +11,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import Chat from './Chat';
+import CourseChatContainer from './ChatContainer';
 import CourseModules from './Modules';
 
 class Course extends React.Component {
@@ -176,9 +176,9 @@ class Course extends React.Component {
         <Grid item md={5} sm={12} style={{ height: '100%' }}>
           <h1>Chat</h1>
           {_.isEmpty(this.state.course) ? (
-            <Chat />
+            <CourseChatContainer />
           ) : (
-            <Chat link={this.state.course.chatBot.link} />
+            <CourseChatContainer link={this.state.course.chatBot.link} />
           )}
         </Grid>
       </Grid>

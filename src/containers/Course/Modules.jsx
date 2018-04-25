@@ -15,9 +15,7 @@ import Delete from 'material-ui-icons/Delete';
 import MoreVert from 'material-ui-icons/MoreVert';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import axios from 'axios';
-import Done from 'material-ui-icons/Done';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import CourseModuleDelete from './Module/Delete';
 import CourseModuleEdit from './Module/Edit';
@@ -312,31 +310,11 @@ class CourseModules extends React.Component {
                 return (
                   <ListItem key={item.recordId} style={{ padding: '5px' }}>
                     {/* Record panel */}
-                    <ExpansionPanel
-                      style={{ width: '100%' }}
-                      expanded={
-                        _.isEmpty(this.props.botResponse)
-                          ? false
-                          : item.recordId ===
-                            this.props.botResponse.exercise.exerciseId
-                            ? true
-                            : false
-                      }>
+                    <ExpansionPanel style={{ width: '100%' }}>
                       <ExpansionPanelSummary>
                         {item.answerRegex ? (
                           <ListItemIcon style={{ alignSelf: 'center' }}>
-                            {_.isEmpty(this.props.botResponse) ? (
-                              <InboxIcon />
-                            ) : item.recordId ===
-                            this.props.botResponse.exercise.exerciseId ? (
-                              this.props.botResponse.exercise.markDone ? (
-                                <Done />
-                              ) : (
-                                <InboxIcon />
-                              )
-                            ) : (
-                              <InboxIcon />
-                            )}
+                            <InboxIcon />
                           </ListItemIcon>
                         ) : (
                           <ListItemIcon style={{ alignSelf: 'center' }}>
