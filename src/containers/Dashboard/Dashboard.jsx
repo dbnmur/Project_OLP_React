@@ -3,7 +3,7 @@ import Grid from 'material-ui/Grid';
 import { CircularProgress } from 'material-ui/Progress';
 
 import Course from './Course/Course';
-import CourseNewDialog from './Course/New/Dialog';
+import CourseNewDialogContainer from './Course/New/DialogContainer';
 
 const Dashboard = ({ items, isLoading }) => {
   return (
@@ -60,7 +60,7 @@ const Dashboard = ({ items, isLoading }) => {
           alignItems="center"
           style={{ marginTop: '25px', width: '100%' }}>
           <Grid item>
-            <CourseNewDialog />
+            <CourseNewDialogContainer />
           </Grid>
         </Grid>
       ) : (
