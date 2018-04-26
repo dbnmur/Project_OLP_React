@@ -11,9 +11,6 @@ class ExpansionWithInlineActionsContainer extends React.Component {
     };
 
     this.onClickDelete = this.onClickDelete.bind(this);
-    this.filterRecordsAfterDeletion = this.filterRecordsAfterDeletion.bind(
-      this
-    );
   }
 
   // Delete a record
@@ -22,17 +19,12 @@ class ExpansionWithInlineActionsContainer extends React.Component {
     axios
       .delete(`/api/records/${recordId}`)
       .then(res => {
-        this.filterRecordsAfterDeletion(recordId);
+        this.props.filterAfterDelete(recordId);
       })
       .catch(error => {
         console.log(error);
       });
   };
-
-  filterRecordsAfterDeletion(recordId) {
-    let items = this.state.items.filter(item => item.recordId !== recordId);
-    this.setState({ items });
-  }
 
   render() {
     return (

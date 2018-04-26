@@ -35,6 +35,9 @@ class CourseModules extends React.Component {
     this.openDelete = this.openDelete.bind(this);
     this.onclickOpenRecordUpdate = this.onclickOpenRecordUpdate.bind(this);
     this.onClickUpdate = this.onClickUpdate.bind(this);
+    this.filterRecordsAfterDeletion = this.filterRecordsAfterDeletion.bind(
+      this
+    );
   }
 
   componentDidMount() {
@@ -220,6 +223,11 @@ class CourseModules extends React.Component {
     this.setState({ openRecordUpdate: true, selectedRecord: record });
   }
 
+  filterRecordsAfterDeletion(recordId) {
+    let items = this.state.items.filter(item => item.recordId !== recordId);
+    this.setState({ items });
+  }
+
   render() {
     const { menu, items } = this.state;
     return (
@@ -242,6 +250,7 @@ class CourseModules extends React.Component {
                     item={item}
                     isTeacher={this.props.isTeacher}
                     onClickOpen={this.onclickOpenRecordUpdate}
+                    filterAfterDelete={this.filterRecordsAfterDeletion}
                   />
                 </ListItem>
               );
