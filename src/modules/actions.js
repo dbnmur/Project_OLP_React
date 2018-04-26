@@ -59,3 +59,12 @@ export const catchBotResponse = botResponse => {
     }
   };
 };
+
+export const addExercise = exercise => {
+  return {
+    type: 'ADD_EXERCISE',
+    exercise: {
+      ...exercise
+    }
+  };
+};
