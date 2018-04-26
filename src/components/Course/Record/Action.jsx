@@ -41,21 +41,31 @@ class CourseRecordAction extends React.Component {
   };
 
   render() {
+    const {
+      open,
+      onClose,
+      record,
+      action,
+      title,
+      children,
+      onConfirm,
+      buttonDisabled
+    } = this.props;
     return (
       <Dialog
-        open={this.props.open}
-        onClose={this.props.onClose}
+        open={open}
+        onClose={onClose}
         onEnter={this.onDialogOpen}
         onExit={this.onDialogExit}
         aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">
-          {this.props.action === 'create'
-            ? `Add a new record to ${this.props.title}`
-            : `Update ${this.props.record.name} record`}
+          {action === 'create'
+            ? `Add a new record to ${title}`
+            : `Update ${record.name} record`}
         </DialogTitle>
         <DialogContent style={{ width: '500px' }}>
           <DialogContentText>
-            {this.props.action === 'create'
+            {action === 'create'
               ? `To add a new record, fill the form below.`
               : `To update this record, fill the form below.`}
           </DialogContentText>
@@ -114,13 +124,13 @@ class CourseRecordAction extends React.Component {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.onClose} color="primary">
+          <Button onClick={onClose} color="primary">
             Cancel
           </Button>
           <Button
-            disabled={this.props.buttonDisabled}
+            disabled={buttonDisabled}
             onClick={() => {
-              this.props.onClick(
+              onConfirm(
                 !this.state.exercise
                   ? {
                       name: this.state.name,
@@ -136,7 +146,7 @@ class CourseRecordAction extends React.Component {
               );
             }}
             color="primary">
-            {this.props.children}
+            {children}
           </Button>
         </DialogActions>
       </Dialog>
