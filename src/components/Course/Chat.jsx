@@ -13,7 +13,6 @@ class CourseChat extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div style={{ border: '1px solid #dedede' }}>
         <List

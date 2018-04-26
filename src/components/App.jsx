@@ -10,7 +10,7 @@ import Login from './Login/Form/Form';
 import NavBar from './NavBar/NavBar';
 import AdminPanel from './Admin/Panel';
 import DashboardContainer from './Dashboard/DashboardContainer';
-import Course from './Course/Course';
+import CourseContainer from './Course/CourseContainer';
 
 class App extends React.Component {
   constructor() {
@@ -74,7 +74,7 @@ class App extends React.Component {
           <Route exact path="/about" component={About} />
           <Route exact path="/admin" component={AdminPanel} />
           <Route exact path="/dashboard" component={DashboardContainer} />
-          <Route exact path="/courses/:courseid" component={Course} />
+          <Route exact path="/courses/:courseid" component={CourseContainer} />
           <Switch>
             <Route exact path="/login" render={() => this.renderHome()} />
             <Route

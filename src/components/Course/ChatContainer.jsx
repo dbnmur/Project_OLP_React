@@ -63,7 +63,6 @@ class CourseChatContainer extends React.Component {
     }
   }
   render() {
-    console.log(this.state.messages);
     return (
       <CourseChat messages={this.state.messages} keyPress={this.keyPress} />
     );
