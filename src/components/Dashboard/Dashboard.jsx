@@ -13,7 +13,7 @@ const Dashboard = ({ items, isLoading }) => {
         container
         justify="center"
         alignItems="center"
-        style={{ width: '100%' }}>
+        className="fullWidth">
         <Grid item>
           <h1 style={{ marginBottom: '45px' }}>Courses</h1>
         </Grid>
@@ -24,7 +24,7 @@ const Dashboard = ({ items, isLoading }) => {
           container
           justify="center"
           alignItems="center"
-          style={{ width: '100%' }}>
+          className="fullWidth">
           <Grid item>
             <CircularProgress />
           </Grid>
@@ -34,7 +34,7 @@ const Dashboard = ({ items, isLoading }) => {
           container
           justify="center"
           alignItems="center"
-          style={{ width: '100%' }}>
+          className="fullWidth">
           {items.map((el, index) => {
             return (
               <Grid item key={index}>

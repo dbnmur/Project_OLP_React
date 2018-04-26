@@ -22,22 +22,16 @@ const ExpansionWithMenuActions = ({
   children
 }) => {
   return (
-    <ExpansionPanel style={{ width: '100%' }}>
+    <ExpansionPanel className="fullWidth">
       <ExpansionPanelSummary>
-        <Typography
-          style={{ width: '100%', alignSelf: 'center', fontSize: '1.5em' }}>
+        <Typography className="alignSelfCenter fullWidth moduleTitle">
           {module.name}
         </Typography>
         {/* Open module action menu */}
         {isTeacher && (
-          <div
-            style={{
-              width: '100%',
-              textAlign: 'right',
-              padding: '0'
-            }}>
+          <div className="fullWidth menuWrapper">
             <IconButton
-              style={{ float: 'right' }}
+              className="floatRight"
               aria-owns={menu ? 'simple-menu' : null}
               aria-haspopup="true"
               onClick={handleMenuClick}>
@@ -55,14 +49,14 @@ const ExpansionWithMenuActions = ({
           <MenuItem onClick={handleMenuClose}>
             <Button onClick={openEdit}>
               <ModeEdit color="primary" />
-              <Typography style={{ padding: '10px' }}>Edit module</Typography>
+              <Typography className="menuAction">Edit module</Typography>
             </Button>
           </MenuItem>
           {/* Module delete */}
           <MenuItem onClick={handleMenuClose}>
             <Button onClick={openDelete}>
               <Delete color="secondary" />
-              <Typography style={{ padding: '10px' }}>Delete module</Typography>
+              <Typography className="menuAction">Delete module</Typography>
             </Button>
           </MenuItem>
         </Menu>

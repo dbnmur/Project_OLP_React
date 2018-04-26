@@ -15,14 +15,7 @@ class CourseChat extends React.Component {
   render() {
     return (
       <div style={{ border: '1px solid #dedede' }}>
-        <List
-          style={{
-            maxHeight: '500px',
-            overflow: 'auto',
-            width: '100%',
-            minHeight: '500px',
-            background: '#f7f7f7'
-          }}>
+        <List className="chatFeed">
           <ChatFeed
             messages={this.props.messages}
             showSenderName
@@ -39,7 +32,7 @@ class CourseChat extends React.Component {
             }}
           />
           <div
-            style={{ float: 'left', clear: 'both' }}
+            className="scrollToDiv"
             ref={el => {
               this.messagesEnd = el;
             }}
@@ -47,14 +40,7 @@ class CourseChat extends React.Component {
         </List>
         <Input
           placeholder="Your message"
-          style={{
-            height: '40px',
-            lineHeight: '40px',
-            width: '100%',
-            background: '#fffdfd',
-            borderTop: '1px solid #dedede',
-            padding: '10px'
-          }}
+          className="messageInput"
           disableUnderline
           onKeyDown={this.props.keyPress}
           inputProps={{

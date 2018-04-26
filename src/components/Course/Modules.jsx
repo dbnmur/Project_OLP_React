@@ -223,7 +223,7 @@ class CourseModules extends React.Component {
   render() {
     const { menu, items } = this.state;
     return (
-      <div style={{ paddingBottom: '10px' }}>
+      <div className="module">
         {/* Module panel */}
         <ExpansionWithMenuActions
           module={this.props.module}
@@ -233,10 +233,10 @@ class CourseModules extends React.Component {
           handleMenuClose={this.handleMenuClose}
           openEdit={this.openEdit}
           openDelete={this.openDelete}>
-          <List style={{ width: '100%' }}>
+          <List className="fullWidth">
             {items.map((item, index) => {
               return (
-                <ListItem key={item.recordId} style={{ padding: '5px' }}>
+                <ListItem key={item.recordId} className="moduleItem">
                   {/* Record panel */}
                   <ExpansionWithInlineActionsContainer
                     item={item}

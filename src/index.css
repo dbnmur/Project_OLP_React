@@ -14,6 +14,14 @@ h1 {
   font-weight: 400;
 }
 
+.floatRight {
+  float: right;
+}
+
+.moduleTitle {
+  font-size: 1.5em !important;
+}
+
 [data-reactroot] {
   height: 100% !important;
 }
@@ -54,6 +62,88 @@ button:disabled {
   background-color: red !important;
 }
 
+.fullWidth {
+  width: 100%;
+}
+
+.fullHeight {
+  height: 100%;
+}
+
+.alignSelfCenter {
+  align-self: center;
+}
+
+/* chat */
 .chat-messages > div:nth-child(2n-1) > div > div {
   background-color: rgb(158, 157, 157) !important;
 }
+
+.chatFeed {
+  max-height: 500px;
+  overflow: auto;
+  width: 100%;
+  min-height: 500px;
+  background: #f7f7f7;
+}
+
+.scrollToDiv {
+  float: left;
+  clear: both;
+}
+
+.messageInput {
+  height: 40px;
+  line-height: 40px;
+  width: 100%;
+  background: #fffdfd;
+  border-top: 1px solid #dedede;
+  padding: 10px;
+}
+
+/* end of chat */
+
+/* course */
+.createModuleButton {
+  float: left;
+  margin-left: 25px;
+}
+
+.moduleCreationMenu {
+  left: 75px;
+}
+
+/* end of course */
+
+/* modules */
+.module {
+  padding-bottom: 10px;
+}
+
+.moduleItem {
+  padding: 5px;
+}
+
+/* end of modules */
+
+/* item action */
+.actionsContainer {
+  text-align: right;
+  padding: 0 !important;
+}
+
+.actionButton {
+  margin-left: 5px;
+}
+/* end of item action */
+
+/* menu action */
+.menuWrapper {
+  text-align: right;
+  padding: 0 !important;
+}
+
+.menuAction {
+  padding: 10px;
+}
+/* end of menu action */

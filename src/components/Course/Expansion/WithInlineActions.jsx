@@ -18,34 +18,29 @@ const ExpansionWithInlineActions = ({
   isTeacher
 }) => {
   return (
-    <ExpansionPanel style={{ width: '100%' }}>
+    <ExpansionPanel className="fullWidth">
       <ExpansionPanelSummary>
         {item.answerRegex ? (
-          <ListItemIcon style={{ alignSelf: 'center' }}>
+          <ListItemIcon className="alignSelfCenter">
             <InboxIcon />
           </ListItemIcon>
         ) : (
-          <ListItemIcon style={{ alignSelf: 'center' }}>
+          <ListItemIcon className="alignSelfCenter">
             <Description />
           </ListItemIcon>
         )}
-        <Typography style={{ alignSelf: 'center', width: '100%' }}>
+        <Typography className="alignSelfCenter fullWidth">
           {item.name}
         </Typography>
         {/* Record action buttons */}
         {isTeacher && (
-          <div
-            style={{
-              width: '100%',
-              textAlign: 'right',
-              padding: '0'
-            }}>
+          <div className="fullWidth actionsContainer">
             {/* Update record */}
             <IconButton
               onClick={e => {
                 onClickOpen(e, item);
               }}>
-              <ModeEdit color="primary" style={{ marginLeft: '5px' }} />
+              <ModeEdit color="primary" className="actionButton" />
             </IconButton>
             {/* Delete record */}
             <IconButton

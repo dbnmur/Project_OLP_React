@@ -26,13 +26,13 @@ const Course = ({
   moduleUpdate
 }) => {
   return (
-    <Grid container spacing={8} style={{ width: '100%' }} justify="center">
+    <Grid container spacing={8} className="fullWidth" justify="center">
       {!isLoading ? (
-        <Grid item md={5} sm={12} style={{ width: '100%' }}>
+        <Grid item md={5} sm={12} className="fullWidth">
           <Grid
             container
             spacing={8}
-            style={{ width: '100%' }}
+            className="fullWidth"
             justify="flex-start"
             alignItems="center">
             <h1>{course.name}</h1>
@@ -40,7 +40,7 @@ const Course = ({
               <React.Fragment>
                 <Tooltip title="Add new module">
                   <Button
-                    style={{ float: 'left', marginLeft: '25px' }}
+                    className="createModuleButton"
                     variant="fab"
                     mini
                     color="secondary"
@@ -53,7 +53,7 @@ const Course = ({
                 </Tooltip>
                 <Menu
                   id="simple-menu"
-                  style={{ left: '75px' }}
+                  className="moduleCreationMenu"
                   open={Boolean(menuParent)}
                   onClose={handleMenuClose}
                   anchorEl={menuParent}>
@@ -93,7 +93,7 @@ const Course = ({
           <CircularProgress />
         </Grid>
       )}
-      <Grid item md={5} sm={12} style={{ height: '100%' }}>
+      <Grid item md={5} sm={12} className="fullHeight">
         <h1>Chat</h1>
         {_.isEmpty(course) ? (
           <CourseChatContainer />
